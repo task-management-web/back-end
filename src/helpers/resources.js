@@ -1,0 +1,16 @@
+module.exports = {
+    emailAlreadyExists: "Email dùng đã tồn tại",
+    emailCannotBeEmpty: "Email không được phép để trống.",
+    emailExceedsAllowedLength: "Email không được vượt quá 100 ký tự.",
+    emailInvalidate: "Email không đúng định dạng.",
+    fullNameCannotBeEmpty: "Họ tên không được phép để trống.",
+    fullNameExceedsAllowedLength: "Họ tên không được vượt quá 100 ký tự.",
+    internalServerError: "Lỗi máy chủ.",
+    passwordCannotBeEmpty: "Mật khẩu không được để trống.",
+    passwordExceedsAllowedLength: "Mật khẩu không được vượt quá 255 ký tự",
+    signUpSuccess: "Đăng ký thành công.",
+    updateSuccessfull: "Cập nhật thành công",
+    userNameAlreadyExists: "Tên người dùng đã tồn tại",
+    userNameCannotBeEmpty: "Tên người dùng không được phép để trống.",
+    userNameExceedsAllowedLength: "Tên người dùng không được vượt quá 50 ký tự.",
+};
