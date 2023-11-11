@@ -1,8 +1,10 @@
-class NotFoundException extends Error {
+const resources = require("../helpers/resources");
+
+class NotFound extends Error {
     constructor() {
         super();
-        this.message = "Không tìm thấy tài nguyên!";
+        this.message = resources.notFound;
     }
 }
 
-module.exports = NotFoundException;
+module.exports = NotFound;

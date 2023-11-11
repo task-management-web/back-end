@@ -1,4 +1,5 @@
-const router = require("express").Router();
+const express = require("express");
+const { verifyToken } = require("../controllers/auth");
 const {
     getUserById,
     createUser,
@@ -6,7 +7,9 @@ const {
     deleteUser,
 } = require("../controllers/user");
 
+const router = express.Router();
+
 router.post("/", createUser);
-router.route("/:id").get(getUserById).put(updateUser).delete(deleteUser);
+router.route("/:id").get(verifyToken, getUserById).put(verifyToken, updateUser).delete(verifyToken, deleteUser);
 
 module.exports = router;

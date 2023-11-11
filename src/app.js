@@ -3,8 +3,8 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const router = require("./routes/index");
 const errorHandler = require("./middlewares/handleErrors");
+const router = require("./routes/index");
 
 const app = express();
 const port = process.env.PORT || 3000;
