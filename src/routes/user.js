@@ -10,6 +10,9 @@ const {
 const router = express.Router();
 
 router.post("/", createUser);
-router.route("/:id").get(verifyToken, getUserById).put(verifyToken, updateUser).delete(verifyToken, deleteUser);
+router.use("/:id", verifyToken);
+router.get("/:id", getUserById);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
 module.exports = router;

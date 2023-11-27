@@ -1,5 +1,5 @@
-const sequelize = require("../configs/connectDb");
 const { DataTypes } = require("sequelize");
+const sequelize = require("../configs/connectDb");
 
 const User = sequelize.define("User", {
     fullName: {
@@ -18,8 +18,14 @@ const User = sequelize.define("User", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    deleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
 });
 
-sequelize.sync();
+(async () => {
+    await User.sync({ alter: true });
+})();
 
 module.exports = User;

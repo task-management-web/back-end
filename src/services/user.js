@@ -1,6 +1,6 @@
 const User = require("../models/user");
 
-/**
+/*
  * Kiểm tra trùng tên người dùng.
  */
 async function userNameAlreadyExists(userName, next) {
@@ -16,7 +16,7 @@ async function userNameAlreadyExists(userName, next) {
     }
 }
 
-/**
+/*
  * Kiểm tra trùng email.
  */
 async function emailAlreadyExists(email, next) {

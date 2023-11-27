@@ -1,4 +1,4 @@
-// Cấu hình biến môi trường
+// Configure environment variables
 require("dotenv").config();
 
 const express = require("express");
@@ -9,7 +9,7 @@ const router = require("./routes/index");
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Sử dụng middleware
+// Using middleware
 app.use(express.static(path.join(__dirname, "statics")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
