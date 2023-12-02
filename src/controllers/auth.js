@@ -1,41 +1,51 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 const resources = require("../helpers/resources");
 const BadRequest = require("../errors/BadRequest");
+const NotFound = require("../errors/NotFound");
 const Unauthorized = require("../errors/Unauthorized");
 const User = require("../models/user");
 
-/**
- * Đăng nhập.
+/*
+ * Login.
  */
 async function login(req, res, next) {
     const { userName, password } = req.body;
 
     try {
-        const user = await User.findOne({
+        const userData = await User.findOne({
             where: {
-                userName: userName,
+                [Op.and]: {
+                    [Op.or]: {
+                        userName: userName,
+                        email: userName,
+                    },
+                    deleted: false,
+                },
             },
         });
 
-        if (!user) {
-            return next(new NotFound());
+        if (!userData) {
+            throw new NotFound();
         }
 
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        // Compare passwords
+        const isValidPassword = await bcrypt.compare(
+            password,
+            userData.password
+        );
+
         if (!isValidPassword) {
-            return next(new Unauthorized());
+            throw new Unauthorized();
         }
 
-        const payload = {
-            id: user.id,
-            fullName: user.fullName,
-            userName: user.userName,
-            email: user.email,
+        const user = {
+            id: userData.id,
         };
 
-        const token = jwt.sign({ payload }, process.env.SECRET_KEY, {
-            expiresIn: "1h",
+        const token = jwt.sign(user, process.env.SECRET_KEY, {
+            expiresIn: process.env.TOKEN_EXPIRATION_TIME,
         });
 
         res.status(200).json({ token });
@@ -44,24 +54,19 @@ async function login(req, res, next) {
     }
 }
 
-/**
- * Đăng xuất.
+/*
+ * Log out.
+ * TODO: Quản lý token để đăng xuất nghiêm ngặt hơn.
  */
-
 function logout(req, res, next) {
-    res.send({ message: resources.logOutSuccessfully });
+    res.status(200).json({ message: resources.logOutSuccessfully });
 }
 
-/**
- * Xác thực token.
+/*
+ * Verify token.
  */
-
 function verifyToken(req, res, next) {
     const token = req.header("Authorization");
-
-    if (!token) {
-        return next(new BadRequest());
-    }
 
     try {
         const payload = jwt.verify(token, process.env.SECRET_KEY);
