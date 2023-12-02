@@ -1,9 +1,9 @@
 const resources = require("../helpers/resources");
 
 class NotFound extends Error {
-    constructor() {
+    constructor(message) {
         super();
-        this.message = resources.notFound;
+        this.message = message || resources.notFound;
     }
 }
 

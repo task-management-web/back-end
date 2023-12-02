@@ -1,7 +1,7 @@
 const express = require("express");
 const { verifyToken } = require("../controllers/auth");
 const {
-    getUserById,
+    getUser,
     createUser,
     updateUser,
     deleteUser,
@@ -10,8 +10,8 @@ const {
 const router = express.Router();
 
 router.post("/", createUser);
-router.use("/:id", verifyToken);
-router.get("/:id", getUserById);
+router.use("/", verifyToken);
+router.get("/", getUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 

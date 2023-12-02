@@ -8,10 +8,7 @@ const Board = sequelize.define("Board", {
     },
     description: DataTypes.TEXT,
     backgroundUrl: DataTypes.STRING,
+    closed: DataTypes.BOOLEAN,
 });
-
-(async () => {
-    await Board.sync({ force: true });
-})();
 
 module.exports = Board;

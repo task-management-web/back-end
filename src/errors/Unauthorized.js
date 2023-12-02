@@ -1,9 +1,9 @@
 const resources = require("../helpers/resources");
 
 class Unauthorized extends Error {
-    constructor() {
+    constructor(message) {
         super();
-        this.message = resources.unauthorized;
+        this.message = message || resources.unauthorized;
     }
 }
 

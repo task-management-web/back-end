@@ -22,16 +22,17 @@ const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
 /*
  * Lấy thông tin người dùng.
  */
-async function getUserById(req, res, next) {
+async function getUser(req, res, next) {
     try {
-        const user = await User.findOne({
+        let user = await User.findOne({
+            attributes: { exclude: ["password", "deleted"] },
             where: {
-                id: req.params.id,
+                id: req.user.id,
             },
         });
 
         if (!user) {
-            return next(new NotFound());
+            throw new NotFound(resources.userNotFound);
         }
 
         res.json(user);
@@ -48,6 +49,7 @@ async function createUser(req, res, next) {
     let errors = {};
 
     checkFullName(fullName, errors);
+    // TODO: Kiểm tra userName không được chứa ký tự đặc biệt như @, &, $, %, v.v.
     checkUserName(userName, errors);
     checkEmail(email, errors);
     checkPassword(password, errors);
@@ -83,7 +85,6 @@ async function createUser(req, res, next) {
         });
 
         res.status(201).json({
-            status: "success",
             message: resources.signUpSuccess,
             user: {
                 fullName,
@@ -111,7 +112,7 @@ async function updateUser(req, res, next) {
         if (!user) {
             return next(new NotFound());
         }
-        
+
         const { fullName, userName } = req.body;
         let errors = {};
 
@@ -171,10 +172,10 @@ async function deleteUser(req, res, next) {
     } catch (error) {
         next(error);
     }
-};
+}
 
 module.exports = {
-    getUserById,
+    getUser,
     createUser,
     updateUser,
     deleteUser,

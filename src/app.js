@@ -1,6 +1,9 @@
 // Configure environment variables
 require("dotenv").config();
 
+// Connect to the database and initialize tables
+require("./models/index");
+
 const express = require("express");
 const path = require("path");
 const errorHandler = require("./middlewares/handleErrors");
@@ -13,7 +16,7 @@ const port = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, "statics")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(router);
+app.use("/api", router);
 app.use(errorHandler);
 
 app.listen(port, () => {

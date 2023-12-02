@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const resources = require("../helpers/resources");
 const BadRequest = require("../errors/BadRequest");
+const NotFound = require("../errors/NotFound");
 const Unauthorized = require("../errors/Unauthorized");
 const User = require("../models/user");
 
@@ -10,40 +11,40 @@ const User = require("../models/user");
  * Login.
  */
 async function login(req, res, next) {
-    const { userName, email, password } = req.body;
+    const { userName, password } = req.body;
 
     try {
-        const user = await User.findOne({
+        const userData = await User.findOne({
             where: {
                 [Op.and]: {
                     [Op.or]: {
                         userName: userName,
-                        email: email,
+                        email: userName,
                     },
                     deleted: false,
                 },
             },
         });
 
-        if (!user) {
-            return next(new NotFound());
+        if (!userData) {
+            throw new NotFound();
         }
 
-        // So sánh mật khẩu
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        // Compare passwords
+        const isValidPassword = await bcrypt.compare(
+            password,
+            userData.password
+        );
 
         if (!isValidPassword) {
-            return next(new Unauthorized());
+            throw new Unauthorized();
         }
 
-        const userInfo = {
-            id: user.id,
-            fullName: user.fullName,
-            userName: user.userName,
-            email: user.email,
+        const user = {
+            id: userData.id,
         };
 
-        const token = jwt.sign({ userInfo }, process.env.SECRET_KEY, {
+        const token = jwt.sign(user, process.env.SECRET_KEY, {
             expiresIn: process.env.TOKEN_EXPIRATION_TIME,
         });
 
@@ -55,6 +56,7 @@ async function login(req, res, next) {
 
 /*
  * Log out.
+ * TODO: Quản lý token để đăng xuất nghiêm ngặt hơn.
  */
 function logout(req, res, next) {
     res.status(200).json({ message: resources.logOutSuccessfully });
@@ -65,10 +67,6 @@ function logout(req, res, next) {
  */
 function verifyToken(req, res, next) {
     const token = req.header("Authorization");
-
-    if (!token) {
-        return next(new Unauthorized());
-    }
 
     try {
         const payload = jwt.verify(token, process.env.SECRET_KEY);
