@@ -15,7 +15,7 @@ const errorHandler = (err, req, res, next) => {
     } else if (err instanceof Conflict) {
         res.status(409).json(err);
     } else {
-        // console.log(err);
+        console.log(err);
         res.status(500).json(
             new InternalServerError(resources.internalServerError, err)
         );

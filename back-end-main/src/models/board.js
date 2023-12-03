@@ -1,25 +1,16 @@
-const sequelize = require("../configs/connectDb");
-const { DataTypes } = require("sequelize");
 
-const Broad = sequelize.define("Broad", {
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  backgroundUrl: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  closed: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-  },
+const { DataTypes } = require("sequelize");
+const sequelize = require("../configs/connectDb");
+
+const Board = sequelize.define("Board", {
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    description: DataTypes.TEXT,
+    backgroundUrl: DataTypes.STRING,
+    closed: DataTypes.BOOLEAN,
 });
 
-sequelize.sync();
+module.exports = Board;
 
-module.exports = Broad;
