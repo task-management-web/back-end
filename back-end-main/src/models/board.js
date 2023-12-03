@@ -1,3 +1,4 @@
+
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
@@ -12,3 +13,4 @@ const Board = sequelize.define("Board", {
 });
 
 module.exports = Board;
+
