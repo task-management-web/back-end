@@ -1,21 +1,34 @@
+const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
-const { DataTypes } = require("sequelize");
 
-const Activity = sequelize.define("Activity", {
+
+class Activity extends Model {
+    static associate(models){
+        Activity.belongsTo(models.Card, { foreignKey: 'cardId' ,targetKey: 'id' });
+        Activity.belongsTo(models.User, { foreignKey: 'userId' ,targetKey: 'id' });
+    }
+}
+Activity.init(
+  {
     content: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-    },  
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     cardId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-});
+  },
+  {
+    sequelize,
+    modelName: 'Activity', // Tên của mô hình
+  }
+);
 
-sequelize.sync();
+
 
 module.exports = Activity;

@@ -1,29 +1,29 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class Label extends Model {
+class Checklist extends Model {
     static associate(models){
-        Label.hasMany(models.Cardlabel, { foreignKey: 'labelId'  });     
+        Checklist.hasMany(models.Checklistitem, { foreignKey: 'checklistId' });  
+        Checklist.belongsTo(models.Card, { foreignKey: 'cardId' ,targetKey: 'id' });   
     }
 }
 
-Label.init(
+Checklist.init(
   {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    color: {
+    cardId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     sequelize,
-    modelName: 'Label', 
+    modelName: 'Checklist', 
   }
 );
 
 sequelize.sync(); 
-
-module.exports = Label;
+module.exports = Checklist;

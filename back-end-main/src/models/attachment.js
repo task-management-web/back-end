@@ -1,18 +1,21 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class CardMember extends Model {
+class Attachment extends Model {
     static associate(models){
-        CardMember.belongsTo(models.Card, { foreignKey: 'cardId' });
-        CardMember.belongsTo(models.User, { foreignKey: 'userId' });
+        Attachment.belongsTo(models.Card, { foreignKey: 'cardId' ,targetKey: 'id' });
+        Attachment.belongsTo(models.User, { foreignKey: 'userId' ,targetKey: 'id' });
     }
 }
 
-CardMember.init(
+Attachment.init(
   {
     cardId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    fileUrl: {
+      type: DataTypes.STRING,
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -21,10 +24,10 @@ CardMember.init(
   },
   {
     sequelize,
-    modelName: 'CardMember', 
+    modelName: 'Attachment', 
   }
 );
 
 sequelize.sync(); 
 
-module.exports = CardMember;
+module.exports = Attachment;
