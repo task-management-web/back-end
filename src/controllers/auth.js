@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const resources = require("../helpers/resources");
-const BadRequest = require("../errors/BadRequest");
 const NotFound = require("../errors/NotFound");
 const Unauthorized = require("../errors/Unauthorized");
 const User = require("../models/user");
@@ -48,7 +47,11 @@ async function login(req, res, next) {
             expiresIn: process.env.TOKEN_EXPIRATION_TIME,
         });
 
-        res.status(200).json({ token });
+        res.status(200).json({
+            token,
+            tokenExpirationTime: process.env.TOKEN_EXPIRATION_TIME,
+            userId: userData.id,
+        });
     } catch (error) {
         next(error);
     }

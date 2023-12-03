@@ -1,12 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/connectDb");
-const BadRequest = require("../errors/BadRequest");
-const {
-    checkFullName,
-    checkUserName,
-    checkEmail,
-    checkPassword,
-} = require("../helpers/validations");
 
 const User = sequelize.define(
     "User",
