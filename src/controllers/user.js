@@ -87,7 +87,6 @@ async function createUser(req, res, next) {
         res.status(201).json({
             message: resources.signUpSuccess,
             user: {
-                fullName,
                 userName,
                 email,
             },
