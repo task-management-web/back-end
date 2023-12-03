@@ -21,6 +21,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", router);
 app.use(errorHandler);
 
+
+const List = require("./models/list");
+const Activity = require("./models/activity")
+const Cardlabel = require("./models/card_laber")
+const CardMember = require("./models/card_member")
+const Checklist = require("./models/check_list")
+const Label = require("./models/label")
+const Card = require("./models/card")
+const Attachment = require("./models/attachment")
+const Checklistitem = require("./models/check_list_item")
+const Comment = require("./models/comment")
+
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}.`);
 });
