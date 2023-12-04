@@ -12,44 +12,56 @@ function addError(errors, key, message) {
 }
 
 /*
- * Kiểm tra fullName:
- * - fullName không được phép trống (hoặc toàn ký tự khoảng cách)
- * - fullName không được vượt quá 100 ký tự
+ * Kiểm tra định dạng họ tên.
  */
 function checkFullName(fullName, errors) {
+    // Họ tên không được phép trống (hoặc chỉ gồm các ký tự khoảng cách)
     if (isNullOrEmptyString(fullName)) {
         addError(errors, "fullName", resources.fullNameCannotBeEmpty);
-    } else if (fullName.length > 100) {
+    }
+    // Họ tên không vượt quá 100 ký tự
+    else if (fullName.length > 100) {
         addError(errors, "fullName", resources.fullNameExceedsAllowedLength);
     }
 }
 
 /*
- * Kiểm tra userName:
- * - userName không được phép trống (hoặc toàn ký tự khoảng cách)
- * - userName không được vượt quá 50 ký tự
+ * Kiểm tra định dạng tên người dùng.
  */
 function checkUserName(userName, errors) {
+    // Tên người dùng không được phép trống (hoặc chỉ gồm các ký tự khoảng cách)
     if (isNullOrEmptyString(userName)) {
         addError(errors, "userName", resources.userNameCannotBeEmpty);
-    } else if (userName.length > 50) {
-        addError(errors, "userName", resources.userNameExceedsAllowedLength);
+    } else {
+        // Tên người dùng không vượt quá 50 ký tự
+        if (userName.length > 50) {
+            addError(
+                errors,
+                "userName",
+                resources.userNameExceedsAllowedLength
+            );
+        }
+        // Tên người dùng chỉ chứa các ký tự chữ cái và chữ số
+        const regex = /^[a-zA-Z0-9]+$/;
+        if (!regex.test(userName)) {
+            addError(errors, "userName", resources.userNameDoesNotContainSpecialCharacters);
+        };
     }
 }
 
 /*
- * Kiểm tra email:
- * - email không được phép trống (hoặc toàn ký tự khoảng cách)
- * - email không được vượt quá 100 ký tự
- * - email phải đúng định dạng
+ * Kiểm tra định dạng email.
  */
 function checkEmail(email, errors) {
+    // Email không được phép trống (hoặc chỉ gồm các ký tự khoảng cách)
     if (isNullOrEmptyString(email)) {
         addError(errors, "email", resources.emailCannotBeEmpty);
     } else {
+        // Email không vượt quá 100 ký tự
         if (email.length > 100) {
             addError(errors, "email", resources.emailExceedsAllowedLength);
         }
+        // Email đúng định dạng
         if (!isValidEmail(email)) {
             addError(errors, "email", resources.emailInvalidate);
         }
@@ -57,15 +69,21 @@ function checkEmail(email, errors) {
 }
 
 /*
- * Kiểm tra password:
- * - password không được phép trống
- * - password không được vượt quá 255 ký tự
+ * Kiểm tra định dạng mật khẩu.
  */
 function checkPassword(password, errors) {
+    // Mật khẩu không được phép trống (hoặc chỉ gồm các ký tự khoảng cách)
     if (isNullOrEmptyString(password)) {
         addError(errors, "password", resources.passwordCannotBeEmpty);
-    } else if (password.length > 255) {
-        addError(errors, "password", resources.passwordExceedsAllowedLength);
+    } else {
+        // Mật khẩu không vượt quá 255 ký tự
+        if (password.length > 255) {
+            addError(errors, "password", resources.passwordExceedsAllowedLength);
+        }
+        // Mật khẩu không ít hơn 8 ký tự
+        if (password.length < 8) {
+            addError(errors, "password", resources.passwordIsTooShort);
+        }
     }
 }
 

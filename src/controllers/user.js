@@ -5,6 +5,8 @@ const Conflict = require("../errors/Conflict");
 const NotFound = require("../errors/NotFound");
 const User = require("../models/user");
 
+const { isNullOrEmptyString } = require("../helpers/common");
+
 const {
     addError,
     checkFullName,
@@ -30,13 +32,11 @@ function getUser(req, res, next) {
 /*
  * Kiểm tra định dạng dữ liệu người dùng.
  */
-// TODO: Xử lý chỉ kiểm tra và cập nhật những trường được gửi lên.
 function checkUserDataFormat(user) {
     const { fullName, userName, email, password } = user;
     let errors = {};
 
     checkFullName(fullName, errors);
-    // TODO: Kiểm tra userName không được chứa ký tự đặc biệt như @, &, $, %, v.v.
     checkUserName(userName, errors);
     checkEmail(email, errors);
     checkPassword(password, errors);
@@ -50,7 +50,6 @@ function checkUserDataFormat(user) {
 /*
  * Kiểm tra xung đột dữ liệu người dùng.
  */
-// TODO: Xử lý chỉ kiểm tra và cập nhật những trường được gửi lên.
 async function checkUserDataConflict(user) {
     const { userName, email } = user;
     let errors = {};
@@ -106,21 +105,22 @@ async function createUser(req, res, next) {
 /*
  * Cập nhật thông tin người dùng.
  */
-// TODO: Xử lý chỉ kiểm tra và cập nhật những trường được gửi lên.
 async function updateUser(req, res, next) {
     try {
         const { fullName } = req.body;
-        let errors = {};
 
-        checkFullName(fullName, errors);
+        if (isNullOrEmptyString(fullName)) {
+            let errors = {};
 
-        // Xử lý lỗi (nếu có)
-        if (Object.keys(errors).length !== 0) {
-            throw new BadRequest(errors);
+            checkFullName(fullName, errors);
+
+            if (Object.keys(errors).length !== 0) {
+                throw new BadRequest(errors);
+            }
         }
 
         // Lưu dữ liệu vào database
-        await user.update(
+        await req.user.update(
             {
                 fullName,
             },
