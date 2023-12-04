@@ -1,4 +1,6 @@
 module.exports = {
+    changePasswordSuccessfully: "Đổi mật khẩu thành công",
+    confirmPasswordDoesNotMatch: "Mật khẩu xác nhận không trùng khớp.",
     dataConflict: "Xung đột dữ liệu.",
     emailAlreadyExists: "Email đã tồn tại.",
     emailCannotBeEmpty: "Email không được để trống.",
@@ -20,8 +22,10 @@ module.exports = {
     userDoesNotExist: "Người dùng không tồn tại.",
     userNameAlreadyExists: "Tên người dùng đã tồn tại.",
     userNameCannotBeEmpty: "Tên người dùng không được để trống.",
-    userNameDoesNotContainSpecialCharacters: "Tên người dùng không chứa các ký tự đặc biệt.",
+    userNameDoesNotContainSpecialCharacters:
+        "Tên người dùng không chứa các ký tự đặc biệt.",
     userNameExceedsAllowedLength:
         "Tên người dùng không được vượt quá 50 ký tự.",
     wrongUsernameOrPassword: "Tên đăng nhập hoặc mật khẩu không đúng.",
+    wrongPassword: "Mật khẩu không đúng.",
 };

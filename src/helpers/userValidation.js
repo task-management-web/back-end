@@ -71,18 +71,18 @@ function checkEmail(email, errors) {
 /*
  * Kiểm tra định dạng mật khẩu.
  */
-function checkPassword(password, errors) {
+function checkPassword(password, fieldName, errors) {
     // Mật khẩu không được phép trống (hoặc chỉ gồm các ký tự khoảng cách)
     if (isNullOrEmptyString(password)) {
-        addError(errors, "password", resources.passwordCannotBeEmpty);
+        addError(errors, fieldName, resources.passwordCannotBeEmpty);
     } else {
         // Mật khẩu không vượt quá 255 ký tự
         if (password.length > 255) {
-            addError(errors, "password", resources.passwordExceedsAllowedLength);
+            addError(errors, fieldName, resources.passwordExceedsAllowedLength);
         }
         // Mật khẩu không ít hơn 8 ký tự
         if (password.length < 8) {
-            addError(errors, "password", resources.passwordIsTooShort);
+            addError(errors, fieldName, resources.passwordIsTooShort);
         }
     }
 }

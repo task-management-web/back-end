@@ -39,7 +39,7 @@ function checkUserDataFormat(user) {
     checkFullName(fullName, errors);
     checkUserName(userName, errors);
     checkEmail(email, errors);
-    checkPassword(password, errors);
+    checkPassword(password, "password", errors);
 
     // Xử lý lỗi (nếu có)
     if (Object.keys(errors).length !== 0) {
@@ -120,16 +120,9 @@ async function updateUser(req, res, next) {
         }
 
         // Lưu dữ liệu vào database
-        await req.user.update(
-            {
-                fullName,
-            },
-            {
-                where: {
-                    id: req.user.id,
-                },
-            }
-        );
+        await req.user.update({
+            fullName,
+        });
 
         res.status(200).json({
             message: resources.updateSuccessfull,
@@ -145,18 +138,70 @@ async function updateUser(req, res, next) {
 async function deleteUser(req, res, next) {
     try {
         // Cập nhật trường "deleted" thành true
-        await req.user.update(
-            {
-                deleted: true,
-            },
-            {
-                where: {
-                    id: req.user.id,
-                },
-            }
-        );
+        await req.user.update({
+            deleted: true,
+        });
 
         res.status(200).json({ message: resources.userDeleted });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/*
+ * Đổi mật khẩu.
+ */
+async function changePassword(req, res, next) {
+    const oldPassword = req.body.oldPassword || "";
+    const newPassword = req.body.newPassword || "";
+    const confirmPassword = req.body.confirmPassword || "";
+    let errors = {};
+
+    try {
+        // Lấy mật khẩu từ database
+        const user = await User.findOne({
+            attributes: ["password"],
+            where: {
+                id: req.user.id,
+            },
+        });
+
+        // So sánh mật khẩu
+        const isValidPassword = await bcrypt.compare(
+            oldPassword,
+            user.password
+        );
+
+        if (!isValidPassword) {
+            addError(errors, "oldPassword", resources.wrongPassword);
+        }
+
+        // Kiểm tra định dạng mật khẩu mới
+        checkPassword(newPassword, "newPassword", errors);
+
+        // Kiểm tra xác nhận mật khẩu mới
+        if (newPassword !== confirmPassword) {
+            addError(
+                errors,
+                "confirmPassword",
+                resources.confirmPasswordDoesNotMatch
+            );
+        }
+
+        // Xử lý lỗi (nếu có)
+        if (Object.keys(errors).length !== 0) {
+            throw new BadRequest(errors);
+        }
+
+        // Băm mật khẩu mới
+        const hash = await bcrypt.hash(newPassword, saltRounds);
+
+        // Lưu trữ mật khẩu mới
+        await req.user.update({
+            password: hash,
+        });
+
+        res.status(200).json({ message: resources.changePasswordSuccessfully });
     } catch (error) {
         next(error);
     }
@@ -167,4 +212,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    changePassword,
 };

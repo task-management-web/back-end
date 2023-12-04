@@ -5,6 +5,7 @@ const {
     createUser,
     updateUser,
     deleteUser,
+    changePassword,
 } = require("../controllers/user");
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.use("/", verifyToken);
 router.get("/", getUser);
 router.put("/", updateUser);
 router.delete("/", deleteUser);
+router.put("/change-password", changePassword);
 
 module.exports = router;
