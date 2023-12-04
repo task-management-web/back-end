@@ -6,11 +6,12 @@ const NotFound = require("../errors/NotFound");
 const User = require("../models/user");
 
 const {
+    addError,
     checkFullName,
     checkUserName,
     checkEmail,
     checkPassword,
-} = require("../helpers/validations");
+} = require("../helpers/userValidation");
 
 const {
     userNameAlreadyExists,
@@ -22,30 +23,16 @@ const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
 /*
  * Lấy thông tin người dùng.
  */
-async function getUser(req, res, next) {
-    try {
-        let user = await User.findOne({
-            attributes: { exclude: ["password", "deleted"] },
-            where: {
-                id: req.user.id,
-            },
-        });
-
-        if (!user) {
-            throw new NotFound(resources.userNotFound);
-        }
-
-        res.json(user);
-    } catch (error) {
-        next(error);
-    }
+function getUser(req, res, next) {
+    res.status(200).json(req.user);
 }
 
 /*
- * Tạo tài khoản người dùng.
+ * Kiểm tra định dạng dữ liệu người dùng.
  */
-async function createUser(req, res, next) {
-    const { fullName, userName, email, password } = req.body;
+// TODO: Xử lý chỉ kiểm tra và cập nhật những trường được gửi lên.
+function checkUserDataFormat(user) {
+    const { fullName, userName, email, password } = user;
     let errors = {};
 
     checkFullName(fullName, errors);
@@ -56,40 +43,60 @@ async function createUser(req, res, next) {
 
     // Xử lý lỗi (nếu có)
     if (Object.keys(errors).length !== 0) {
-        next(new BadRequest(errors));
-        return;
+        throw new BadRequest(errors);
     }
+}
+
+/*
+ * Kiểm tra xung đột dữ liệu người dùng.
+ */
+// TODO: Xử lý chỉ kiểm tra và cập nhật những trường được gửi lên.
+async function checkUserDataConflict(user) {
+    const { userName, email } = user;
+    let errors = {};
 
     // Kiểm tra trùng tên người dùng
-    if (await userNameAlreadyExists(userName, next)) {
-        next(new Conflict(resources.userNameAlreadyExists));
-        return;
+    if (await userNameAlreadyExists(userName)) {
+        addError(errors, "userName", resources.userNameAlreadyExists);
     }
 
     // Kiểm tra trùng email
-    if (await emailAlreadyExists(email, next)) {
-        next(new Conflict(resources.emailAlreadyExists));
-        return;
+    if (await emailAlreadyExists(email)) {
+        addError(errors, "email", resources.emailAlreadyExists);
     }
 
+    // Xử lý lỗi (nếu có)
+    if (Object.keys(errors).length !== 0) {
+        throw new Conflict(errors);
+    }
+}
+
+/*
+ * Tạo tài khoản người dùng.
+ */
+async function createUser(req, res, next) {
     try {
+        const user = req.body;
+
+        // Kiểm tra định dạng dữ liệu
+        checkUserDataFormat(user);
+
+        // Kiểm tra xung đột dữ liệu
+        await checkUserDataConflict(user);
+
         // Băm mật khẩu
-        const hash = await bcrypt.hash(password, saltRounds);
+        const hash = await bcrypt.hash(user.password, saltRounds);
 
         // Lưu dữ liệu vào database
         await User.create({
-            fullName,
-            userName,
-            email,
+            fullName: user.fullName,
+            userName: user.userName,
+            email: user.email,
             password: hash,
         });
 
         res.status(201).json({
             message: resources.signUpSuccess,
-            user: {
-                userName,
-                email,
-            },
         });
     } catch (error) {
         next(error);
@@ -99,50 +106,33 @@ async function createUser(req, res, next) {
 /*
  * Cập nhật thông tin người dùng.
  */
+// TODO: Xử lý chỉ kiểm tra và cập nhật những trường được gửi lên.
 async function updateUser(req, res, next) {
     try {
-        // Kiểm tra người dùng có tồn tại hay không
-        const user = await User.findOne({
-            where: {
-                id: req.params.id,
-            },
-        });
-
-        if (!user) {
-            return next(new NotFound());
-        }
-
-        const { fullName, userName } = req.body;
+        const { fullName } = req.body;
         let errors = {};
 
         checkFullName(fullName, errors);
-        checkUserName(userName, errors);
 
         // Xử lý lỗi (nếu có)
         if (Object.keys(errors).length !== 0) {
-            next(new BadRequest(errors));
-            return;
-        }
-
-        // Kiểm tra trùng tên người dùng
-        if (await userNameAlreadyExists(userName, next)) {
-            next(new Conflict(resources.userNameAlreadyExists));
-            return;
+            throw new BadRequest(errors);
         }
 
         // Lưu dữ liệu vào database
-        await user.update({
-            fullName,
-            userName,
-        });
+        await user.update(
+            {
+                fullName,
+            },
+            {
+                where: {
+                    id: req.user.id,
+                },
+            }
+        );
 
         res.status(200).json({
-            status: "success",
             message: resources.updateSuccessfull,
-            user: {
-                fullName,
-                userName,
-            },
         });
     } catch (error) {
         next(error);
@@ -154,20 +144,19 @@ async function updateUser(req, res, next) {
  */
 async function deleteUser(req, res, next) {
     try {
-        const user = await User.findOne({
-            where: {
-                id: req.params.id,
-            },
-        });
-
-        if (!user) {
-            return next(new NotFound());
-        }
-
         // Cập nhật trường "deleted" thành true
-        await user.update({ deleted: true });
+        await req.user.update(
+            {
+                deleted: true,
+            },
+            {
+                where: {
+                    id: req.user.id,
+                },
+            }
+        );
 
-        res.status(204).json({ message: resources.accountDeletedSuccessfully });
+        res.status(200).json({ message: resources.userDeleted });
     } catch (error) {
         next(error);
     }
