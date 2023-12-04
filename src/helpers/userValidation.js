@@ -1,4 +1,5 @@
 const resources = require("./resources");
+const { isNullOrEmptyString, isValidEmail } = require("./common");
 
 /*
  * Thêm mô tả lỗi vào đối tượng errors của response.
@@ -11,20 +12,12 @@ function addError(errors, key, message) {
 }
 
 /*
- * Kiểm tra một chuỗi có phải email hợp lệ không.
- */
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-/*
  * Kiểm tra fullName:
  * - fullName không được phép trống (hoặc toàn ký tự khoảng cách)
  * - fullName không được vượt quá 100 ký tự
  */
 function checkFullName(fullName, errors) {
-    if (fullName === undefined || fullName === null || fullName.trim() === "") {
+    if (isNullOrEmptyString(fullName)) {
         addError(errors, "fullName", resources.fullNameCannotBeEmpty);
     } else if (fullName.length > 100) {
         addError(errors, "fullName", resources.fullNameExceedsAllowedLength);
@@ -37,7 +30,7 @@ function checkFullName(fullName, errors) {
  * - userName không được vượt quá 50 ký tự
  */
 function checkUserName(userName, errors) {
-    if (userName === null || userName === undefined || userName.trim() === "") {
+    if (isNullOrEmptyString(userName)) {
         addError(errors, "userName", resources.userNameCannotBeEmpty);
     } else if (userName.length > 50) {
         addError(errors, "userName", resources.userNameExceedsAllowedLength);
@@ -51,7 +44,7 @@ function checkUserName(userName, errors) {
  * - email phải đúng định dạng
  */
 function checkEmail(email, errors) {
-    if (email === null || email === undefined || email.trim() === "") {
+    if (isNullOrEmptyString(email)) {
         addError(errors, "email", resources.emailCannotBeEmpty);
     } else {
         if (email.length > 100) {
@@ -69,7 +62,7 @@ function checkEmail(email, errors) {
  * - password không được vượt quá 255 ký tự
  */
 function checkPassword(password, errors) {
-    if (password === null || password === undefined || password === "") {
+    if (isNullOrEmptyString(password)) {
         addError(errors, "password", resources.passwordCannotBeEmpty);
     } else if (password.length > 255) {
         addError(errors, "password", resources.passwordExceedsAllowedLength);
@@ -77,6 +70,7 @@ function checkPassword(password, errors) {
 }
 
 module.exports = {
+    addError,
     checkFullName,
     checkUserName,
     checkEmail,

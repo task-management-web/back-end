@@ -1,7 +1,10 @@
+const resources = require("../helpers/resources");
+
 class Conflict extends Error {
-    constructor(message) {
+    constructor(errors) {
         super();
-        this.message = message;
+        this.message = resources.dataConflict;
+        this.errors = errors;
     }
 }
 

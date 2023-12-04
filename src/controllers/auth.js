@@ -10,7 +10,8 @@ const User = require("../models/user");
  * Login.
  */
 async function login(req, res, next) {
-    const { userName, password } = req.body;
+    const userName = req.body.userName || "";
+    const password = req.body.password || "";
 
     try {
         const userData = await User.findOne({
@@ -26,7 +27,7 @@ async function login(req, res, next) {
         });
 
         if (!userData) {
-            throw new NotFound();
+            throw new Unauthorized(resources.wrongUsernameOrPassword);
         }
 
         // Compare passwords
@@ -36,13 +37,14 @@ async function login(req, res, next) {
         );
 
         if (!isValidPassword) {
-            throw new Unauthorized();
+            throw new Unauthorized(resources.wrongUsernameOrPassword);
         }
 
         const user = {
             id: userData.id,
         };
 
+        // Create tokens
         const token = jwt.sign(user, process.env.SECRET_KEY, {
             expiresIn: process.env.TOKEN_EXPIRATION_TIME,
         });
@@ -68,14 +70,32 @@ function logout(req, res, next) {
 /*
  * Verify token.
  */
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
     const token = req.header("Authorization");
 
     try {
-        const payload = jwt.verify(token, process.env.SECRET_KEY);
-        req.user = payload;
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+        const user = await User.findOne({
+            attributes: { exclude: ["password", "deleted"] },
+            where: {
+                [Op.and]: {
+                    id: decoded.id,
+                    deleted: false,
+                },
+            },
+        });
+
+        if (!user) {
+            throw new NotFound(resources.userDoesNotExist);
+        }
+
+        req.user = user;
         next();
     } catch (error) {
+        if (error instanceof NotFound) {
+            next(error);
+        }
         next(new Unauthorized());
     }
 }
