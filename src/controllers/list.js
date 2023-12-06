@@ -1,7 +1,5 @@
 const List = require('../models/list');
 
-
-
 const createNewList = async (req, res, next) => {
     try {
         const newList = await List.create({
@@ -32,9 +30,30 @@ const deleteList = async (req, res) => {
         res.status(500).json({ error: 'Could not delete list' });
     }
 };
+const updateList = async (req, res) => {
+    try {
+        const listId = req.params.id;
+        const listToUpdate = await List.findByPk(listId);
+        if (!listToUpdate) {
+            return res.status(404).json({ error: 'List not found' });
+        }
+
+        
+        listToUpdate.title = req.body.title || listToUpdate.title;
+        listToUpdate.position = req.body.position || listToUpdate.position;
+
+        await listToUpdate.save();
+
+        res.json({ message: 'List updated successfully', list: listToUpdate });
+    } catch (error) {
+        console.error('Error updating list:', error);
+        res.status(500).json({ error: 'Could not update list' });
+    }
+};
+
 
  
 
 module.exports = {
-    createNewList, deleteList
+    createNewList, deleteList, updateList
 }

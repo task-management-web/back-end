@@ -5,6 +5,7 @@ const {
     createUser,
     updateUser,
     deleteUser,
+    changePassword,
 } = require("../controllers/user");
 
 const router = express.Router();
@@ -12,7 +13,8 @@ const router = express.Router();
 router.post("/", createUser);
 router.use("/", verifyToken);
 router.get("/", getUser);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.put("/", updateUser);
+router.delete("/", deleteUser);
+router.put("/change-password", changePassword);
 
 module.exports = router;
