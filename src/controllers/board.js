@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-const NotFound = require("../errors/NotFound");
-const Board = require("../models/board");
-
-/*
- * Lấy thông tin bảng.
-=======
 const enums = require("../helpers/enums");
 const resources = require("../helpers/resources");
 const Board = require("../models/board");
@@ -23,7 +16,6 @@ async function getAllBoards(req, res, next) {
 
 /*
  * Lấy thông tin một bảng theo ID.
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
  */
 async function getBoardById(req, res, next) {
     try {
@@ -44,8 +36,6 @@ async function getBoardById(req, res, next) {
 }
 
 /*
-<<<<<<< HEAD
-=======
  * Kiểm tra định dạng dữ liệu bảng.
  */
 function checkBoard(board) {
@@ -61,17 +51,12 @@ function checkBoard(board) {
 }
 
 /*
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
  * Tạo bảng.
  */
 async function createBoard(req, res, next) {
     const board = req.body;
 
     try {
-<<<<<<< HEAD
-        const newBoard = Board.create(board);
-        res.status(201);
-=======
         // Kiểm tra định dạng dữ liệu
         checkBoard(board);
 
@@ -88,7 +73,6 @@ async function createBoard(req, res, next) {
             message: resources.createBoardSuccessfully,
             boardId: boardInserted.id,
         });
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
     } catch (error) {
         next(error);
     }
@@ -110,10 +94,7 @@ async function closeBoard(req, res, next) {
 
 module.exports = {
     createBoard,
-<<<<<<< HEAD
-=======
     getAllBoards,
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
     getBoardById,
     updateBoard,
     closeBoard,

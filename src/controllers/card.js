@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const CardMember = require('../models/card_member')
 
+
 // Tạo thẻ mới
 const createNewCard = async (req, res, next) => {
     try {
@@ -123,7 +124,7 @@ const setCardDueDates = async (req, res) => {
     }
 };
 
-
+// Xóa thẻ
 const deleteCard = async (req, res) => {
     try {
         const cardId = req.params.id;
