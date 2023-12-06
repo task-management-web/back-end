@@ -8,7 +8,6 @@ const User = require("../models/user");
 const { isNullOrEmptyString } = require("../helpers/common");
 
 const {
-    addError,
     checkFullName,
     checkUserName,
     checkEmail,
@@ -41,7 +40,6 @@ function checkUserDataFormat(user) {
     checkEmail(email, errors);
     checkPassword(password, "password", errors);
 
-    // Xử lý lỗi (nếu có)
     if (Object.keys(errors).length !== 0) {
         throw new BadRequest(errors);
     }
@@ -64,7 +62,6 @@ async function checkUserDataConflict(user) {
         addError(errors, "email", resources.emailAlreadyExists);
     }
 
-    // Xử lý lỗi (nếu có)
     if (Object.keys(errors).length !== 0) {
         throw new Conflict(errors);
     }
@@ -188,7 +185,6 @@ async function changePassword(req, res, next) {
             );
         }
 
-        // Xử lý lỗi (nếu có)
         if (Object.keys(errors).length !== 0) {
             throw new BadRequest(errors);
         }
