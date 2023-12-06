@@ -13,7 +13,18 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
+/*
+ * Thêm mô tả lỗi vào đối tượng errors của response.
+ */
+function addError(errors, key, message) {
+    if (!errors[key]) {
+        errors[key] = [];
+    }
+    errors[key].push(message);
+}
+
 module.exports = {
     isNullOrEmptyString,
     isValidEmail,
+    addError,
 };

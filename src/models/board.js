@@ -9,7 +9,10 @@ const Board = sequelize.define("Board", {
     },
     description: DataTypes.TEXT,
     backgroundUrl: DataTypes.STRING,
-    closed: DataTypes.BOOLEAN,
+    closed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    }
 });
 
 module.exports = Board;

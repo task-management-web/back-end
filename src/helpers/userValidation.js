@@ -1,15 +1,5 @@
 const resources = require("./resources");
-const { isNullOrEmptyString, isValidEmail } = require("./common");
-
-/*
- * Thêm mô tả lỗi vào đối tượng errors của response.
- */
-function addError(errors, key, message) {
-    if (!errors[key]) {
-        errors[key] = [];
-    }
-    errors[key].push(message);
-}
+const { isNullOrEmptyString, isValidEmail, addError } = require("./common");
 
 /*
  * Kiểm tra định dạng họ tên.

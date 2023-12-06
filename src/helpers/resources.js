@@ -1,6 +1,10 @@
 module.exports = {
+    boardDescriptionExceedsAllowedLength: "Mô tả bảng không được vượt quá 65535 ký tự.",
+    boardTitleCannotBeEmpty: "Tên bảng không được để trống.",
+    boardTitleExceedsAllowedLength: "Tên bảng không được vượt quá 255 ký tự.",
     changePasswordSuccessfully: "Đổi mật khẩu thành công",
     confirmPasswordDoesNotMatch: "Mật khẩu xác nhận không trùng khớp.",
+    createBoardSuccessfully: "Tạo bảng thành công.",
     dataConflict: "Xung đột dữ liệu.",
     emailAlreadyExists: "Email đã tồn tại.",
     emailCannotBeEmpty: "Email không được để trống.",
