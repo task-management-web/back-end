@@ -1,7 +1,9 @@
+const { Op } = require("sequelize");
 const enums = require("../helpers/enums");
 const resources = require("../helpers/resources");
 const Board = require("../models/board");
 const BoardMember = require("../models/boardMember");
+const User = require("../models/user");
 const BadRequest = require("../errors/BadRequest");
 const NotFound = require("../errors/NotFound");
 
@@ -11,7 +13,7 @@ const { checkTitle, checkDescription } = require("../helpers/boardValidation");
  * Lấy thông tin tất cả các bảng của người dùng.
  */
 async function getAllBoards(req, res, next) {
-    res.send("Hello!");
+    //
 }
 
 /*
@@ -23,13 +25,14 @@ async function getBoardById(req, res, next) {
             where: {
                 id: req.params.id,
             },
+            include: User,
         });
 
         if (!board) {
             return next(new NotFound());
         }
 
-        res.json(board);
+        res.status(200).json(board);
     } catch (error) {
         next(error);
     }
