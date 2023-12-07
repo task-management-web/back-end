@@ -18,7 +18,7 @@ const createChecklistItem = async (title, checklistId, dueDate, checked) => {
 };
 
 // Cập nhật checklist item
-const updateChecklistItem = async (userId, checklistItemId, newTitle, newDueDate, newChecked) => {
+const updateChecklistItem = async (userId, checklistItemId, newTitle, newDueDate, ) => {
     try {
         const checklistItemToUpdate = await ChecklistItem.findByPk(checklistItemId);
 
@@ -33,7 +33,6 @@ const updateChecklistItem = async (userId, checklistItemId, newTitle, newDueDate
 
         checklistItemToUpdate.title = newTitle;
         checklistItemToUpdate.dueDate = newDueDate;
-        checklistItemToUpdate.checked = newChecked;
         await checklistItemToUpdate.save();
 
         return checklistItemToUpdate;
@@ -46,7 +45,8 @@ const updateChecklistItem = async (userId, checklistItemId, newTitle, newDueDate
 // Xóa checklist item
 const deleteChecklistItem = async (userId, checklistItemId) => {
     try {
-        const checklistItemToDelete = await ChecklistItem.findByPk(checklistItemId);
+        const id = checklistItemId ;
+        const checklistItemToDelete = await ChecklistItem.findByPk(id);
 
         if (!checklistItemToDelete) {
             throw new Error('Checklist item not found');
@@ -86,7 +86,8 @@ const getChecklistItemsByChecklistId = async (checklistId) => {
 // Cập nhật trạng thái checked cho checklist item
 const updateChecklistItemCheckedStatus = async (userId, checklistItemId, newCheckedStatus) => {
     try {
-        const checklistItemToUpdate = await ChecklistItem.findByPk(checklistItemId);
+        const id = checklistItemId;
+        const checklistItemToUpdate = await ChecklistItem.findByPk(id);
 
         if (!checklistItemToUpdate) {
             throw new Error('Checklist item not found');

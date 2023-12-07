@@ -7,3 +7,5 @@ router.post("/list/create",createNewList)
 router.put("/list/update",updateList)
 router.delete("./list/delete",deleteList)
 router.get("/list/showalllist",getAllLists)
+
+module.exports = router

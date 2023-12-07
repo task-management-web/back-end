@@ -53,19 +53,21 @@ const deleteAttachment = async (attachmentId) => {
     }
 };
 
-// Hiển thị thông tin attachment
-const getAttachmentById = async (attachmentId) => {
+// Hiển thị tất cả attachment của một thẻ
+const getAllAttachmentsByCardId = async (req, res) => {
+    const { cardId } = req.params.cardId;
+
     try {
-        const attachment = await Attachment.findByPk(attachmentId);
+        const allAttachments = await Attachment.findAll({
+            where: {
+                cardId: cardId,
+            },
+        });
 
-        if (!attachment) {
-            throw new Error('Attachment not found');
-        }
-
-        return attachment;
+        res.json(allAttachments);
     } catch (error) {
-        console.error('Error fetching attachment:', error);
-        throw new Error('Could not fetch attachment');
+        console.error('Error fetching attachments by cardId:', error);
+        res.status(500).json({ error: 'Could not fetch attachments by cardId' });
     }
 };
 
@@ -73,5 +75,5 @@ module.exports = {
     createAttachment,
     updateAttachment,
     deleteAttachment,
-    getAttachmentById,
+    getAllAttachmentsByCardId,
 };

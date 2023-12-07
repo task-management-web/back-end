@@ -4,7 +4,7 @@ const Cardlabel = require('../models/card_label');
 
 
 // Tạo thẻ mới
-const createNewCard = async (req, res, next) => {
+const createNewCard = async (req, res) => {
     try {
         const newCard = await Card.create({
             title: req.body.title,
@@ -26,7 +26,7 @@ const createNewCard = async (req, res, next) => {
 // Cập nhật thẻ
 const updateCard = async (req, res) => {
     try {
-        const cardId = req.params.id;
+        const cardId = req.params.cardId;
         const cardToUpdate = await Card.findByPk(cardId);
         if (!cardToUpdate) {
             return res.status(404).json({ error: 'Card not found' });
@@ -47,10 +47,9 @@ const updateCard = async (req, res) => {
 // Di chuyển thẻ sang một danh sách mới (Thay đổi trường ListId)
 const moveCardToNewList = async (req, res) => {
     try {
-        const cardId = req.params.id;
+        const id = req.params.cardId;
         const newListId = req.body.listId;
-
-        const cardToMove = await Card.findByPk(cardId);
+        const cardToMove = await Card.findByPk(id);
         if (!cardToMove) {
             return res.status(404).json({ error: 'Card not found' });
         }
@@ -67,10 +66,10 @@ const moveCardToNewList = async (req, res) => {
 // Thêm hoặc cập nhật ảnh bìa 
 const addOrUpdateCoverImage = async (req, res) => {
     try {
-        const cardId = req.params.id;
+        const id = req.params.cardId;
         const newCoverUrl = req.body.coverUrl;
 
-        const cardToUpdate = await Card.findByPk(cardId);
+        const cardToUpdate = await Card.findByPk(id);
         if (!cardToUpdate) {
             return res.status(404).json({ error: 'Card not found' });
         }
@@ -105,10 +104,10 @@ const addMemberToCard = async (req, res) => {
 // Đặt lịch cho thẻ
 const setCardDueDates = async (req, res) => {
     try {
-        const cardId = req.params.id;
+        const id = req.params.cardId;
         const { startDate, dueDate } = req.body;
 
-        const cardToUpdate = await Card.findByPk(cardId);
+        const cardToUpdate = await Card.findByPk(id);
         if (!cardToUpdate) {
             return res.status(404).json({ error: 'Card not found' });
         }
@@ -126,7 +125,7 @@ const setCardDueDates = async (req, res) => {
 };
 // Hiển thị thẻ trong toàn bộ danh sách
 const showAllCardsInList = async (req, res) => {
-    const { listId } = req.params;
+    const { listId } = req.params.listId;
 
     try {
         const allCardsInList = await Card.findAll({
@@ -146,9 +145,9 @@ const showAllCardsInList = async (req, res) => {
 // Xóa thẻ
 const deleteCard = async (req, res) => {
     try {
-        const cardId = req.params.id;
+        const id = req.params.cardId;
 
-        const cardToDelete = await Card.findByPk(cardId);
+        const cardToDelete = await Card.findByPk(id);
         if (!cardToDelete) {
             return res.status(404).json({ error: 'Card not found' });
         }

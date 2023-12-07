@@ -7,7 +7,9 @@ const { createComment,
 
 const router = express.Router();
 
-router.post("/comment/create")
-router.pust("/comment/update")
-router.delete("/comment/delete")
-router.get("/comment/getallcommentbycardid")
+router.post("/comment/create",createComment)
+router.pust("/comment/update",updateComment)
+router.delete("/comment/delete",deleteComment)
+router.get("/comment/getallcommentbycardid",getCommentsByCardId)
+
+module.exports = router
