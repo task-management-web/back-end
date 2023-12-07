@@ -13,7 +13,7 @@ const { checkTitle, checkDescription } = require("../helpers/boardValidation");
  * Lấy thông tin tất cả các bảng của người dùng.
  */
 async function getAllBoards(req, res, next) {
-    //
+    // Do something...
 }
 
 /*
