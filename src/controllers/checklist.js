@@ -56,5 +56,4 @@ module.exports = {
     createChecklist,
     updateChecklist,
     deleteChecklist,
-    getChecklistById,
 };

@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 const CardMember = require('../models/card_member')
+const Cardlabel = require('../models/card_label');
 
 
 // Tạo thẻ mới
@@ -123,6 +124,24 @@ const setCardDueDates = async (req, res) => {
         res.status(500).json({ error: 'Could not set due dates' });
     }
 };
+// Hiển thị thẻ trong toàn bộ danh sách
+const showAllCardsInList = async (req, res) => {
+    const { listId } = req.params;
+
+    try {
+        const allCardsInList = await Card.findAll({
+            where: {
+                listId: listId,
+            },
+        });
+
+        res.json(allCardsInList);
+    } catch (error) {
+        console.error('Error fetching cards in list:', error);
+        res.status(500).json({ error: 'Could not fetch cards in list' });
+    }
+};
+
 
 // Xóa thẻ
 const deleteCard = async (req, res) => {
@@ -145,6 +164,58 @@ const deleteCard = async (req, res) => {
 
 
 
+// Tạo mối quan hệ giữa card và label
+const createCardLabelRelation = async (cardId, labelId) => {
+    try {
+        const newCardLabelRelation = await Cardlabel.create({
+            cardId,
+            labelId,
+        });
+
+        return newCardLabelRelation;
+    } catch (error) {
+        console.error('Error creating card-label relation:', error);
+        throw new Error('Could not create card-label relation');
+    }
+};
+
+// Xóa mối quan hệ giữa card và label
+const deleteCardLabelRelation = async (cardId, labelId) => {
+    try {
+        const cardLabelToDelete = await Cardlabel.findOne({
+            where: { cardId, labelId },
+        });
+
+        if (!cardLabelToDelete) {
+            throw new Error('Card-label relation not found');
+        }
+
+        await cardLabelToDelete.destroy();
+
+        return { message: 'Card-label relation deleted successfully' };
+    } catch (error) {
+        console.error('Error deleting card-label relation:', error);
+        throw new Error('Could not delete card-label relation');
+    }
+};
+
+// Hiển thị các mối quan hệ card và label
+const getCardLabels = async (cardId) => {
+    try {
+        const cardLabels = await Cardlabel.findAll({
+            where: { cardId },
+        });
+
+        return cardLabels;
+    } catch (error) {
+        console.error('Error fetching card labels:', error);
+        throw new Error('Could not fetch card labels');
+    }
+};
+
+
+
 module.exports = {
-    createNewCard ,updateCard ,addMemberToCard ,addOrUpdateCoverImage ,deleteCard ,setCardDueDates ,moveCardToNewList
+    createNewCard ,updateCard ,addMemberToCard ,addOrUpdateCoverImage ,deleteCard ,setCardDueDates ,moveCardToNewList, showAllCardsInList,
+    createCardLabelRelation, deleteCardLabelRelation, getCardLabels, 
 };

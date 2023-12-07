@@ -52,7 +52,7 @@ const deleteChecklistItem = async (userId, checklistItemId) => {
             throw new Error('Checklist item not found');
         }
 
-        // Xóa chỉ khi người dùng viết comment
+        // Xóa chỉ khi người dùng là người tạo checklist item
         if (userId !== checklistItemToDelete.userId) {
             throw new Error('You are not allowed to delete this checklist item');
         }

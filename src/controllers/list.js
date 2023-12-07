@@ -51,9 +51,20 @@ const updateList = async (req, res) => {
     }
 };
 
+const getAllLists = async (req, res) => {
+    try {
+        const allLists = await List.findAll();
+
+        res.json(allLists);
+    } catch (error) {
+        console.error('Error fetching all lists:', error);
+        res.status(500).json({ error: 'Could not fetch all lists' });
+    }
+};
+
 
  
 
 module.exports = {
-    createNewList, deleteList, updateList
+    createNewList, deleteList, updateList, getAllLists
 }

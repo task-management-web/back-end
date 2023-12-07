@@ -1,11 +1,11 @@
-const enums = require("../helpers/enums");
+// const enums = require("../helpers/enums");
 const resources = require("../helpers/resources");
 const Board = require("../models/board");
 const BoardMember = require("../models/boardMember");
 const BadRequest = require("../errors/BadRequest");
 const NotFound = require("../errors/NotFound");
 
-const { checkTitle, checkDescription } = require("../helpers/boardValidation");
+//const { checkTitle, checkDescription } = require("../helpers/boardValidation");
 
 /*
  * Lấy thông tin tất cả các bảng của người dùng.

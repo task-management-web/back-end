@@ -5,21 +5,14 @@ const Conflict = require("../errors/Conflict");
 const NotFound = require("../errors/NotFound");
 const User = require("../models/user");
 
-<<<<<<< HEAD
-=======
 const { isNullOrEmptyString } = require("../helpers/common");
 
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
 const {
     checkFullName,
     checkUserName,
     checkEmail,
     checkPassword,
-<<<<<<< HEAD
-} = require("../helpers/validations");
-=======
 } = require("../helpers/userValidation");
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
 
 const {
     userNameAlreadyExists,
@@ -31,24 +24,6 @@ const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
 /*
  * Lấy thông tin người dùng.
  */
-<<<<<<< HEAD
-async function getUser(req, res, next) {
-    try {
-        let user = await User.findOne({
-            attributes: { exclude: ["password", "deleted"] },
-            where: {
-                id: req.user.id,
-            },
-        });
-
-        if (!user) {
-            throw new NotFound(resources.userNotFound);
-        }
-
-        res.json(user);
-    } catch (error) {
-        next(error);
-=======
 function getUser(req, res, next) {
     res.status(200).json(req.user);
 }
@@ -89,7 +64,6 @@ async function checkUserDataConflict(user) {
 
     if (Object.keys(errors).length !== 0) {
         throw new Conflict(errors);
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
     }
 }
 
@@ -97,44 +71,6 @@ async function checkUserDataConflict(user) {
  * Tạo tài khoản người dùng.
  */
 async function createUser(req, res, next) {
-<<<<<<< HEAD
-    const { fullName, userName, email, password } = req.body;
-    let errors = {};
-
-    checkFullName(fullName, errors);
-    // TODO: Kiểm tra userName không được chứa ký tự đặc biệt như @, &, $, %, v.v.
-    checkUserName(userName, errors);
-    checkEmail(email, errors);
-    checkPassword(password, errors);
-
-    // Xử lý lỗi (nếu có)
-    if (Object.keys(errors).length !== 0) {
-        next(new BadRequest(errors));
-        return;
-    }
-
-    // Kiểm tra trùng tên người dùng
-    if (await userNameAlreadyExists(userName, next)) {
-        next(new Conflict(resources.userNameAlreadyExists));
-        return;
-    }
-
-    // Kiểm tra trùng email
-    if (await emailAlreadyExists(email, next)) {
-        next(new Conflict(resources.emailAlreadyExists));
-        return;
-    }
-
-    try {
-        // Băm mật khẩu
-        const hash = await bcrypt.hash(password, saltRounds);
-
-        // Lưu dữ liệu vào database
-        await User.create({
-            fullName,
-            userName,
-            email,
-=======
     try {
         const user = req.body;
 
@@ -152,20 +88,11 @@ async function createUser(req, res, next) {
             fullName: user.fullName,
             userName: user.userName,
             email: user.email,
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
             password: hash,
         });
 
         res.status(201).json({
             message: resources.signUpSuccess,
-<<<<<<< HEAD
-            user: {
-                fullName,
-                userName,
-                email,
-            },
-=======
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
         });
     } catch (error) {
         next(error);
@@ -177,50 +104,6 @@ async function createUser(req, res, next) {
  */
 async function updateUser(req, res, next) {
     try {
-<<<<<<< HEAD
-        // Kiểm tra người dùng có tồn tại hay không
-        const user = await User.findOne({
-            where: {
-                id: req.params.id,
-            },
-        });
-
-        if (!user) {
-            return next(new NotFound());
-        }
-
-        const { fullName, userName } = req.body;
-        let errors = {};
-
-        checkFullName(fullName, errors);
-        checkUserName(userName, errors);
-
-        // Xử lý lỗi (nếu có)
-        if (Object.keys(errors).length !== 0) {
-            next(new BadRequest(errors));
-            return;
-        }
-
-        // Kiểm tra trùng tên người dùng
-        if (await userNameAlreadyExists(userName, next)) {
-            next(new Conflict(resources.userNameAlreadyExists));
-            return;
-        }
-
-        // Lưu dữ liệu vào database
-        await user.update({
-            fullName,
-            userName,
-        });
-
-        res.status(200).json({
-            status: "success",
-            message: resources.updateSuccessfull,
-            user: {
-                fullName,
-                userName,
-            },
-=======
         const { fullName } = req.body;
 
         if (isNullOrEmptyString(fullName)) {
@@ -240,7 +123,6 @@ async function updateUser(req, res, next) {
 
         res.status(200).json({
             message: resources.updateSuccessfull,
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
         });
     } catch (error) {
         next(error);
@@ -252,22 +134,6 @@ async function updateUser(req, res, next) {
  */
 async function deleteUser(req, res, next) {
     try {
-<<<<<<< HEAD
-        const user = await User.findOne({
-            where: {
-                id: req.params.id,
-            },
-        });
-
-        if (!user) {
-            return next(new NotFound());
-        }
-
-        // Cập nhật trường "deleted" thành true
-        await user.update({ deleted: true });
-
-        res.status(204).json({ message: resources.accountDeletedSuccessfully });
-=======
         // Cập nhật trường "deleted" thành true
         await req.user.update({
             deleted: true,
@@ -332,7 +198,6 @@ async function changePassword(req, res, next) {
         });
 
         res.status(200).json({ message: resources.changePasswordSuccessfully });
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
     } catch (error) {
         next(error);
     }
@@ -343,8 +208,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
-<<<<<<< HEAD
-=======
     changePassword,
->>>>>>> 09091a419af5164b97e2c1c2166ddf5750d6730a
 };
