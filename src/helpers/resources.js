@@ -1,5 +1,7 @@
 module.exports = {
-    boardDescriptionExceedsAllowedLength: "Mô tả bảng không được vượt quá 65535 ký tự.",
+    addMemmberToBoardSuccessfully: "Thêm thành viên vào bảng thành công.",
+    boardDescriptionExceedsAllowedLength:
+        "Mô tả bảng không được vượt quá 65535 ký tự.",
     boardDoesNotExist: "Bảng không tồn tại",
     boardTitleCannotBeEmpty: "Tên bảng không được để trống.",
     boardTitleExceedsAllowedLength: "Tên bảng không được vượt quá 255 ký tự.",
@@ -22,12 +24,15 @@ module.exports = {
     passwordCannotBeEmpty: "Mật khẩu không được để trống.",
     passwordExceedsAllowedLength: "Mật khẩu không được vượt quá 255 ký tự",
     passwordIsTooShort: "Mật khẩu không ít hơn 8 ký tự.",
+    removeMemberFromBoardSuccessfully: "Xoá thành viên khỏi bảng thành công.",
     signUpSuccess: "Đăng ký thành công.",
     unauthorized: "Xác thực không thành công.",
     updateSuccessfully: "Cập nhật thành công.",
+    userAlreadyMemberOfBoard: "Người dùng vốn đã được thêm vào bảng.",
     userDeleted: "Đã xoá người dùng.",
     userDoesNotExist: "Người dùng không tồn tại.",
     userHasNoBoards: "Người dùng không có bảng nào.",
+    userIsNotAMember: "Người dùng không phải thành viên của bảng.",
     userNameAlreadyExists: "Tên người dùng đã tồn tại.",
     userNameCannotBeEmpty: "Tên người dùng không được để trống.",
     userNameDoesNotContainSpecialCharacters:
