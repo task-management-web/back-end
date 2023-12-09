@@ -10,18 +10,18 @@ const {
 
 const router = express.Router();
 
-router.post("/card/createcard",createNewCard)
-router.put("/card/updatecard/:cardId",updateCard)
-router.post("/card/addmembertocard",addMemberToCard)
-router.put("/card/changecoverimage/:cardId",addOrUpdateCoverImage)
-router.delete("/card/delete/:cardId",deleteCard)
-router.post("/card/setcardduedate",setCardDueDates)
-router.put("/card/movecardtonewlist/:cardId",moveCardToNewList)
-router.post("/card/createcardlabelrelation",createCardLabelRelation)
-router.delete("/card/deletecardlabelrelation",deleteCardLabelRelation)
-router.get("/card/allcardlabelrelation",getCardLabels)
-router.get("/card/showallcardinlist/:listId",showAllCardsInList)
-router.post("/card/log/create",createActivity)
-router.get("/card/log/getall",getActivitiesByCardId  )
+router.post("/createcard",createNewCard)
+router.put("/updatecard/:cardId",updateCard)
+router.post("/addmembertocard",addMemberToCard)
+router.put("/changecoverimage/:cardId",addOrUpdateCoverImage)
+router.delete("/delete/:cardId",deleteCard)
+router.post("/setcardduedate",setCardDueDates)
+router.put("/movecardtonewlist/:cardId",moveCardToNewList)
+router.post("/createcardlabelrelation",createCardLabelRelation)
+router.delete("/deletecardlabelrelation",deleteCardLabelRelation)
+router.get("/allcardlabelrelation",getCardLabels)
+router.get("/showallcardinlist/:listId",showAllCardsInList)
+router.post("/log/create",createActivity)
+router.get("/log/getall",getActivitiesByCardId  )
 
 module.exports = router

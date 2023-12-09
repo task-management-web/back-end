@@ -3,9 +3,9 @@ const {createLabel, updateLabel, deleteLabel, getAllLabels } = require("../contr
 
 const router = express.Router();
 
-router.post("/label/createlabel",createLabel)
-router.put("/label/update",updateLabel)
-router.delete("/label/delete",deleteLabel)
-router.get("/label/getalllabels",getAllLabels)
+router.post("/createlabel",createLabel)
+router.put("/update",updateLabel)
+router.delete("/delete",deleteLabel)
+router.get("/getalllabels",getAllLabels)
 
 module.exports = router

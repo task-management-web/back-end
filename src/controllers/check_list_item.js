@@ -1,4 +1,4 @@
-const ChecklistItem = require('../models/checklistitem');
+const ChecklistItem = require('../models/check_list_item');
 
 // Tạo checklist item mới
 const createChecklistItem = async (title, checklistId, dueDate, checked) => {

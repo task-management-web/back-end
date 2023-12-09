@@ -7,9 +7,9 @@ const {createAttachment,
 
 const router = express.Router();
 
-router.post("/attachment/create",createAttachment)
-router.put("/attachment/update",updateAttachment)
-router.delete("/attachment/delete",deleteAttachment)
-router.get("/attachment/getall/:cardId",getAllAttachmentsByCardId)
+router.post("/create",createAttachment)
+router.put("/update",updateAttachment)
+router.delete("/delete",deleteAttachment)
+router.get("/getall/:cardId",getAllAttachmentsByCardId)
 
 module.exports = router;

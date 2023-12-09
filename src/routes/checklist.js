@@ -3,8 +3,8 @@ const {createChecklist, updateChecklist, deleteChecklist,} = require("../control
 
 const router = express.Router();
 
-router.post("/checklist/create")
-router.put("/checklist/update")
-router.delete("/checklist/delete")
+router.post("/create",createChecklist)
+router.put("/update",updateChecklist)
+router.delete("/delete",deleteChecklist)
 
 module.exports = router

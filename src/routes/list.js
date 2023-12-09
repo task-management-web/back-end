@@ -3,9 +3,9 @@ const {createNewList, deleteList, updateList, getAllLists} = require("../control
 
 const router = express.Router()
 
-router.post("/list/create",createNewList)
-router.put("/list/update",updateList)
-router.delete("./list/delete",deleteList)
-router.get("/list/showalllist",getAllLists)
+router.post("/create",createNewList)
+router.put("/update",updateList)
+router.delete("/delete",deleteList)
+router.get("/showalllist",getAllLists)
 
 module.exports = router

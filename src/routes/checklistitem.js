@@ -6,10 +6,10 @@ const {
 
 const router = express.Router();
 
-router.post("/checklistitem/create",createChecklistItem)
-router.put("/checklistitem/update",updateChecklistItem)
-router.delete("/checklistitem/delete",deleteChecklistItem)
-router.get("/checklistitem/getbychecklistid",getChecklistItemsByChecklistId)
-router.put("checklistitem/getstatus",updateChecklistItemCheckedStatus)
+router.post("/create",createChecklistItem)
+router.put("/update",updateChecklistItem)
+router.delete("/delete",deleteChecklistItem)
+router.get("/getbychecklistid",getChecklistItemsByChecklistId)
+router.put("/getstatus",updateChecklistItemCheckedStatus)
 
 module.exports = router
