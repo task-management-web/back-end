@@ -2,6 +2,21 @@ const resources = require("./resources");
 const { isNullOrEmptyString, addError } = require("./common");
 
 /*
+ * Kiểm tra định dạng dữ liệu bảng.
+ */
+function checkBoard(board) {
+    const { title, description, backgroundUrl } = board;
+    let errors = {};
+
+    checkTitle(title, errors);
+    checkDescription(description, errors);
+
+    if (Object.keys(errors).length !== 0) {
+        throw new BadRequest(errors);
+    }
+}
+
+/*
  * Kiểm tra định dạng tên bảng.
  */
 function checkTitle(title, errors) {
@@ -25,6 +40,5 @@ function checkDescription(description, errors) {
 }
 
 module.exports = {
-    checkTitle,
-    checkDescription,
+    checkBoard,
 }

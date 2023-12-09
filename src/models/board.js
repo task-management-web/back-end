@@ -1,4 +1,3 @@
-
 const { DataTypes } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
@@ -7,13 +6,16 @@ const Board = sequelize.define("Board", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    description: DataTypes.TEXT,
-    backgroundUrl: DataTypes.STRING,
+    description: {
+        type: DataTypes.TEXT,
+    },
+    backgroundUrl: {
+        type: DataTypes.STRING,
+    },
     closed: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-    }
+    },
 });
 
 module.exports = Board;
-
