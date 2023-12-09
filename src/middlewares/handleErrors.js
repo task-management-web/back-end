@@ -1,6 +1,7 @@
 const resources = require("../helpers/resources");
 const BadRequest = require("../errors/BadRequest");
 const Conflict = require("../errors/Conflict");
+const Forbidden = require("../errors/Forbidden");
 const InternalServerError = require("../errors/InternalServerError");
 const NotFound = require("../errors/NotFound");
 const Unauthorized = require("../errors/Unauthorized");
@@ -10,6 +11,8 @@ const errorHandler = (err, req, res, next) => {
         res.status(400).json(err);
     } else if (err instanceof Unauthorized) {
         res.status(401).json(err);
+    } else if (err instanceof Forbidden) {
+        res.status(403).json(err);
     } else if (err instanceof NotFound) {
         res.status(404).json(err);
     } else if (err instanceof Conflict) {

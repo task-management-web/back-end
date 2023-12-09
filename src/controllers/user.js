@@ -121,7 +121,7 @@ async function updateUser(req, res, next) {
         });
 
         res.status(200).json({
-            message: resources.updateSuccessfull,
+            message: resources.updateSuccessfully,
         });
     } catch (error) {
         next(error);
