@@ -2,10 +2,9 @@ const bcrypt = require("bcrypt");
 const resources = require("../helpers/resources");
 const BadRequest = require("../errors/BadRequest");
 const Conflict = require("../errors/Conflict");
-const NotFound = require("../errors/NotFound");
 const User = require("../models/user");
 
-const { isNullOrEmptyString } = require("../helpers/common");
+const { isNullOrEmptyString, addError } = require("../helpers/common");
 
 const {
     checkFullName,
