@@ -7,11 +7,14 @@ const Forbidden = require("../errors/Forbidden");
 const NotFound = require("../errors/NotFound");
 
 const { checkBoard } = require("../helpers/boardValidation");
+const { isAdminOfBoard } = require("../services/board");
 
 /*
  * Lấy thông tin tất cả các bảng của người dùng.
  */
 async function getAllBoards(req, res, next) {
+    const userId = req.user.id;
+
     try {
         const boards = await Board.findAll({
             include: {
@@ -19,7 +22,7 @@ async function getAllBoards(req, res, next) {
                 as: "users",
                 attributes: [],
                 where: {
-                    id: req.user.id,
+                    id: userId,
                 },
             },
         });
@@ -97,28 +100,11 @@ async function createBoard(req, res, next) {
 // TODO: Client có thể gửi lên đối tượng board với các trường cần cập nhật bất kỳ
 async function updateBoard(req, res, next) {
     const boardId = req.params.id;
+    const userId = req.user.id;
 
     try {
         // Kiểm tra quyền admin của người dùng
-        const user = await User.findOne({
-            where: {
-                id: req.user.id,
-            },
-            include: {
-                model: Board,
-                as: "boards",
-                where: {
-                    id: boardId,
-                },
-                through: {
-                    where: {
-                        role: enums.role.admin,
-                    },
-                },
-            },
-        });
-
-        if (!user) {
+        if (!isAdminOfBoard(userId, boardId)) {
             throw new Forbidden();
         }
 
@@ -145,43 +131,30 @@ async function updateBoard(req, res, next) {
  */
 async function closeBoard(req, res, next) {
     const boardId = req.params.id;
+    const userId = req.user.id;
 
-    // Kiểm tra quyền admin của người dùng
-    const user = await User.findOne({
-        where: {
-            id: req.user.id,
-        },
-        include: {
-            model: Board,
-            as: "boards",
-            where: {
-                id: boardId,
-            },
-            through: {
-                where: {
-                    role: enums.role.admin,
-                },
-            },
-        },
-    });
-
-    if (!user) {
-        throw new Forbidden();
-    }
-
-    // Cật nhật trường closed thành true
-    await Board.update(
-        {
-            closed: true,
-        },
-        {
-            where: {
-                id: boardId,
-            },
+    try {
+        // Kiểm tra quyền admin của người dùng
+        if (!isAdminOfBoard(userId, boardId)) {
+            throw new Forbidden();
         }
-    );
 
-    res.status(200).json({ message: resources.closeBoardSuccessfully });
+        // Cật nhật trường closed thành true
+        await Board.update(
+            {
+                closed: true,
+            },
+            {
+                where: {
+                    id: boardId,
+                },
+            }
+        );
+
+        res.status(200).json({ message: resources.closeBoardSuccessfully });
+    } catch (error) {
+        next(error);
+    }
 }
 
 module.exports = {
