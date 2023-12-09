@@ -1,19 +1,37 @@
-const { Op } = require("sequelize");
 const enums = require("../helpers/enums");
 const resources = require("../helpers/resources");
 const Board = require("../models/board");
 const BoardMember = require("../models/boardMember");
 const User = require("../models/user");
-const BadRequest = require("../errors/BadRequest");
+const Forbidden = require("../errors/Forbidden");
 const NotFound = require("../errors/NotFound");
 
-const { checkTitle, checkDescription } = require("../helpers/boardValidation");
+const { checkBoard } = require("../helpers/boardValidation");
 
 /*
  * Lấy thông tin tất cả các bảng của người dùng.
  */
 async function getAllBoards(req, res, next) {
-    // Do something...
+    try {
+        const boards = await Board.findAll({
+            include: {
+                model: User,
+                as: "users",
+                attributes: [],
+                where: {
+                    id: req.user.id,
+                },
+            },
+        });
+
+        if (!boards) {
+            return next(new NotFound(resources.userHasNoBoards));
+        }
+
+        res.status(200).json(boards);
+    } catch (error) {
+        next(error);
+    }
 }
 
 /*
@@ -25,31 +43,23 @@ async function getBoardById(req, res, next) {
             where: {
                 id: req.params.id,
             },
-            include: User,
+            include: {
+                model: User,
+                as: "users",
+                attributes: [],
+                where: {
+                    id: req.user.id,
+                },
+            },
         });
 
         if (!board) {
-            return next(new NotFound());
+            return next(new NotFound(resources.boardDoesNotExist));
         }
 
         res.status(200).json(board);
     } catch (error) {
         next(error);
-    }
-}
-
-/*
- * Kiểm tra định dạng dữ liệu bảng.
- */
-function checkBoard(board) {
-    const { title, description, backgroundUrl } = board;
-    let errors = {};
-
-    checkTitle(title, errors);
-    checkDescription(description, errors);
-
-    if (Object.keys(errors).length !== 0) {
-        throw new BadRequest(errors);
     }
 }
 
@@ -84,15 +94,94 @@ async function createBoard(req, res, next) {
 /*
  * Cập nhật thông tin bảng.
  */
+// TODO: Client có thể gửi lên đối tượng board với các trường cần cập nhật bất kỳ
 async function updateBoard(req, res, next) {
-    // Do something ...
+    const boardId = req.params.id;
+
+    try {
+        // Kiểm tra quyền admin của người dùng
+        const user = await User.findOne({
+            where: {
+                id: req.user.id,
+            },
+            include: {
+                model: Board,
+                as: "boards",
+                where: {
+                    id: boardId,
+                },
+                through: {
+                    where: {
+                        role: enums.role.admin,
+                    },
+                },
+            },
+        });
+
+        if (!user) {
+            throw new Forbidden();
+        }
+
+        const boardUpdate = req.body;
+
+        // Kiểm tra định dạng dữ liệu bảng
+        checkBoard(boardUpdate);
+
+        // Cật nhật dữ liệu trong database
+        await Board.update(boardUpdate, {
+            where: {
+                id: boardId,
+            },
+        });
+
+        res.status(200).json({ message: resources.updateSuccessfully });
+    } catch (error) {
+        next(error);
+    }
 }
 
 /*
  * Đóng bảng.
  */
 async function closeBoard(req, res, next) {
-    // Do something ...
+    const boardId = req.params.id;
+
+    // Kiểm tra quyền admin của người dùng
+    const user = await User.findOne({
+        where: {
+            id: req.user.id,
+        },
+        include: {
+            model: Board,
+            as: "boards",
+            where: {
+                id: boardId,
+            },
+            through: {
+                where: {
+                    role: enums.role.admin,
+                },
+            },
+        },
+    });
+
+    if (!user) {
+        throw new Forbidden();
+    }
+
+    // Cật nhật trường closed thành true
+    await Board.update(
+        {
+            closed: true,
+        },
+        {
+            where: {
+                id: boardId,
+            },
+        }
+    );
+
+    res.status(200).json({ message: resources.closeBoardSuccessfully });
 }
 
 module.exports = {

@@ -6,8 +6,8 @@ const BoardMember = require("./boardMember");
 const User = require("./user");
 
 // Declare associations between tables
-Board.belongsToMany(User, { through: BoardMember });
-User.belongsToMany(Board, { through: BoardMember });
+Board.belongsToMany(User, { through: BoardMember, as: "users" });
+User.belongsToMany(Board, { through: BoardMember, as: "boards" });
 
 // Create tables in the database
 (async () => {
