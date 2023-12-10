@@ -10,7 +10,7 @@ const Board = sequelize.define("Board", {
         type: DataTypes.TEXT,
     },
     backgroundUrl: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
     },
     closed: {
         type: DataTypes.BOOLEAN,
