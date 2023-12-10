@@ -1,8 +1,10 @@
 const ChecklistItem = require('../models/check_list_item');
 
 // Tạo checklist item mới
-const createChecklistItem = async (title, checklistId, dueDate, checked) => {
+const createChecklistItem = async (req, res) => {
     try {
+        const { title, checklistId, dueDate, checked } = req.body;
+
         const newChecklistItem = await ChecklistItem.create({
             title,
             checklistId,
@@ -10,96 +12,98 @@ const createChecklistItem = async (title, checklistId, dueDate, checked) => {
             checked,
         });
 
-        return newChecklistItem;
+        return res.json(newChecklistItem);
     } catch (error) {
         console.error('Error creating checklist item:', error);
-        throw new Error('Could not create checklist item');
+        return res.status(500).json({ error: 'Could not create checklist item' });
     }
 };
 
+
 // Cập nhật checklist item
-const updateChecklistItem = async (userId, checklistItemId, newTitle, newDueDate, ) => {
+const updateChecklistItem = async (req, res) => {
     try {
+        const { checklistItemId, newTitle, newDueDate } = req.body;
+
         const checklistItemToUpdate = await ChecklistItem.findByPk(checklistItemId);
 
         if (!checklistItemToUpdate) {
-            throw new Error('Checklist item not found');
-        }
-
-        // Cập nhật chỉ được áp dụng với người tạo checklist item
-        if (userId !== checklistItemToUpdate.userId) {
-            throw new Error('You are not allowed to update this checklist item');
+            return res.status(404).json({ error: 'Checklist item not found' });
         }
 
         checklistItemToUpdate.title = newTitle;
         checklistItemToUpdate.dueDate = newDueDate;
         await checklistItemToUpdate.save();
 
-        return checklistItemToUpdate;
+        return res.json(checklistItemToUpdate);
     } catch (error) {
         console.error('Error updating checklist item:', error);
-        throw new Error('Could not update checklist item');
+        return res.status(500).json({ error: 'Could not update checklist item' });
     }
 };
 
+
 // Xóa checklist item
-const deleteChecklistItem = async (userId, checklistItemId) => {
+const deleteChecklistItem = async (req, res) => {
     try {
-        const id = checklistItemId ;
-        const checklistItemToDelete = await ChecklistItem.findByPk(id);
+        const {  checklistItemId } = req.body;
+
+        const checklistItemToDelete = await ChecklistItem.findByPk(checklistItemId);
 
         if (!checklistItemToDelete) {
-            throw new Error('Checklist item not found');
+            return res.status(404).json({ error: 'Checklist item not found' });
         }
 
-        // Xóa chỉ khi người dùng là người tạo checklist item
-        if (userId !== checklistItemToDelete.userId) {
-            throw new Error('You are not allowed to delete this checklist item');
-        }
+      
 
         await checklistItemToDelete.destroy();
 
-        return { message: 'Checklist item deleted successfully' };
+        return res.json({ message: 'Checklist item deleted successfully' });
     } catch (error) {
         console.error('Error deleting checklist item:', error);
-        throw new Error('Could not delete checklist item');
+        return res.status(500).json({ error: 'Could not delete checklist item' });
     }
 };
 
+
 // Hiển thị checklist item
-const getChecklistItemsByChecklistId = async (checklistId) => {
+const getChecklistItemsByChecklistId = async (req, res) => {
+    const { checklistId } = req.params;
+
     try {
         const checklistItems = await ChecklistItem.findAll({
             where: { checklistId },
         });
 
-        return checklistItems;
+        res.json(checklistItems);
     } catch (error) {
         console.error('Error fetching checklist items:', error);
-        throw new Error('Could not fetch checklist items');
+        res.status(500).json({ error: 'Could not fetch checklist items' });
     }
 };
 
 
 
-
 // Cập nhật trạng thái checked cho checklist item
-const updateChecklistItemCheckedStatus = async (userId, checklistItemId, newCheckedStatus) => {
+const updateChecklistItemCheckedStatus = async (req, res) => {
+    const { checklistItemId } = req.params;
+    const { newCheckedStatus } = req.body;
+
     try {
         const id = checklistItemId;
         const checklistItemToUpdate = await ChecklistItem.findByPk(id);
 
         if (!checklistItemToUpdate) {
-            throw new Error('Checklist item not found');
+            return res.status(404).json({ error: 'Checklist item not found' });
         }
 
         checklistItemToUpdate.checked = newCheckedStatus;
         await checklistItemToUpdate.save();
 
-        return checklistItemToUpdate;
+        res.json(checklistItemToUpdate);
     } catch (error) {
         console.error('Error updating checklist item:', error);
-        throw new Error('Could not update checklist item');
+        res.status(500).json({ error: 'Could not update checklist item' });
     }
 };
 

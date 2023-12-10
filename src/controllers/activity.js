@@ -1,34 +1,36 @@
 const Activity = require('../models/activity');
 
 // Hàm tạo một hoạt động mới
-const createActivity = async (userId, cardId, content) => {
+const createActivity = async (req, res) => {
+    const { userId, cardId, content } = req.body;
+
     try {
         const newActivity = await Activity.create({
-            userId: userId,
-            cardId: cardId,
-            content: content,
+            userId,
+            cardId,
+            content,
         });
 
-        return newActivity;
+        res.json(newActivity);
     } catch (error) {
         console.error('Error creating activity:', error);
-        throw new Error('Could not create activity');
+        res.status(500).json({ error: 'Could not create activity' });
     }
 };
 
 // lấy tất cả hoạt động theo cardId
-const getActivitiesByCardId = async (cardId) => {
+const getActivitiesByCardId = async (req, res) => {
+    const { cardId } = req.params;
+
     try {
         const activities = await Activity.findAll({
-            where: {
-                cardId: cardId,
-            },
+            where: { cardId },
         });
 
-        return activities;
+        res.json(activities);
     } catch (error) {
         console.error('Error fetching activities by cardId:', error);
-        throw new Error('Could not fetch activities by cardId');
+        res.status(500).json({ error: 'Could not fetch activities by cardId' });
     }
 };
 
