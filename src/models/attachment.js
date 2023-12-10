@@ -1,33 +1,21 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class Attachment extends Model {
-    static associate(models){
-        Attachment.belongsTo(models.Card, { foreignKey: 'cardId' ,targetKey: 'id' });
-        Attachment.belongsTo(models.User, { foreignKey: 'userId' ,targetKey: 'id' });
-    }
-}
+class Attachment extends Model {}
 
 Attachment.init(
-  {
-    cardId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    {
+        fileUrl: {
+            type: DataTypes.STRING,
+        },
     },
-    fileUrl: {
-      type: DataTypes.STRING,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-  },
-  {
-    sequelize,
-    modelName: 'Attachment', 
-  }
+    {
+        sequelize,
+    }
 );
 
-sequelize.sync(); 
+(async () => {
+    await Attachment.sync({ force: true });
+})();
 
 module.exports = Attachment;

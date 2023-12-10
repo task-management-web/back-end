@@ -1,14 +1,16 @@
-const Checklist = require('../models/check_list');
+const Checklist = require('../models/checklist');
 
 // Tạo checklist mới
-const createChecklist = async (title, cardId) => {
+const createChecklist = async (req, res, next) => {
+    const { title, cardId } = req.body;
+
     try {
         const newChecklist = await Checklist.create({
             title,
-            cardId,
+            CardId: cardId,
         });
 
-        return newChecklist;
+        res.status(201).json(newChecklist);
     } catch (error) {
         console.error('Error creating checklist:', error);
         throw new Error('Could not create checklist');

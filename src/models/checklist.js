@@ -1,18 +1,19 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class Comment extends Model {}
+class Checklist extends Model {}
 
-Comment.init(
+Checklist.init(
     {
-        content: {
-            type: DataTypes.TEXT,
+        title: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
     },
     {
         sequelize,
+        modelName: "Checklist",
     }
 );
 
-module.exports = Comment;
+module.exports = Checklist;

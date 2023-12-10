@@ -6,9 +6,9 @@ const createAttachment = async (req, res) => {
         const { cardId, fileUrl, userId } = req.body;
 
         const newAttachment = await Attachment.create({
-            cardId,
             fileUrl,
-            userId,
+            CardId: cardId,
+            UserId: userId,
         });
 
         return res.json(newAttachment);
