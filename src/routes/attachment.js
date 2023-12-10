@@ -10,6 +10,6 @@ const router = express.Router();
 router.post("/create",createAttachment)
 router.put("/update",updateAttachment)
 router.delete("/delete",deleteAttachment)
-router.get("/getall/:cardId",getAllAttachmentsByCardId)
+router.get("/getall",getAllAttachmentsByCardId)
 
 module.exports = router;

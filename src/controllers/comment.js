@@ -2,81 +2,92 @@ const Comment = require('../models/comment');
 
 
 // Tạo comment mới
-const createComment = async (userId, cardId, content) => {
+const createComment = async (req, res) => {
     try {
+        const { userId, cardId, content } = req.body;
+
         const newComment = await Comment.create({
             userId,
             cardId,
             content,
         });
 
-        return newComment;
+        return res.json(newComment);
     } catch (error) {
         console.error('Error creating comment:', error);
         throw new Error('Could not create comment');
     }
 };
 
+
 // Cập nhật nội dung comment
-const updateComment = async (userId, commentId, newContent) => {
+const updateComment = async (req, res) => {
     try {
+        const { userId, commentId, newContent } = req.body;
+
         const commentToUpdate = await Comment.findByPk(commentId);
 
         if (!commentToUpdate) {
-            throw new Error('Comment not found');
+            return res.status(404).json({ error: 'Comment not found' });
         }
 
         // Chỉ cho phép người viết comment cập nhật nội dung
         if (commentToUpdate.userId !== userId) {
-            throw new Error('You are not allowed to update this comment');
+            return res.status(403).json({ error: 'You are not allowed to update this comment' });
         }
 
         commentToUpdate.content = newContent;
         await commentToUpdate.save();
 
-        return commentToUpdate;
+        return res.json(commentToUpdate);
     } catch (error) {
         console.error('Error updating comment:', error);
-        throw new Error('Could not update comment');
+        return res.status(500).json({ error: 'Could not update comment' });
     }
 };
 
+
 // Xóa comment
-const deleteComment = async (userId, commentId) => {
+const deleteComment = async (req, res) => {
     try {
+        const { userId, commentId } = req.body;
+
         const commentToDelete = await Comment.findByPk(commentId);
 
         if (!commentToDelete) {
-            throw new Error('Comment not found');
+            return res.status(404).json({ error: 'Comment not found' });
         }
 
         // Chỉ cho phép người viết comment xóa comment của mình
         if (userId !== commentToDelete.userId) {
-            throw new Error('You are not allowed to delete this comment');
+            return res.status(403).json({ error: 'You are not allowed to delete this comment' });
         }
 
         await commentToDelete.destroy();
 
-        return { message: 'Comment deleted successfully' };
+        return res.json({ message: 'Comment deleted successfully' });
     } catch (error) {
         console.error('Error deleting comment:', error);
-        throw new Error('Could not delete comment');
+        return res.status(500).json({ error: 'Could not delete comment' });
     }
 };
+
  
 // Hiển thị comment
-const getCommentsByCardId = async (cardId) => {
+const getCommentsByCardId = async (req, res) => {
     try {
+        const { cardId } = req.params; 
         const comments = await Comment.findAll({
             where: { cardId },
         });
 
-        return comments;
+        return res.json(comments);
     } catch (error) {
         console.error('Error fetching comments:', error);
-        throw new Error('Could not fetch comments');
+        return res.status(500).json({ error: 'Could not fetch comments' });
     }
 };
+
 
 module.exports = {
     createComment,

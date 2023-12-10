@@ -1,6 +1,6 @@
 const List = require('../models/list');
 
-const createNewList = async (req, res, next) => {
+const createNewList = async (req, res) => {
     try {
         const newList = await List.create({
             title: req.body.title,

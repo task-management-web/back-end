@@ -125,7 +125,7 @@ const setCardDueDates = async (req, res) => {
 };
 // Hiển thị thẻ trong toàn bộ danh sách
 const showAllCardsInList = async (req, res) => {
-    const { listId } = req.params.listId;
+    const listId  = req.params.listId;
 
     try {
         const allCardsInList = await Card.findAll({
