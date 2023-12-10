@@ -2,6 +2,7 @@ const enums = require("../helpers/enums");
 const resources = require("../helpers/resources");
 const Board = require("../models/board");
 const BoardMember = require("../models/boardMember");
+const List = require("../models/list");
 const User = require("../models/user");
 const BadRequest = require("../errors/BadRequest");
 const Forbidden = require("../errors/Forbidden");
@@ -48,14 +49,23 @@ async function getBoardById(req, res, next) {
             where: {
                 id: req.params.id,
             },
-            include: {
-                model: User,
-                as: "users",
-                attributes: [],
-                where: {
-                    id: req.user.id,
+            include: [
+                {
+                    model: User,
+                    as: "users",
+                    attributes: [],
+                    where: {
+                        id: req.user.id,
+                    },
                 },
-            },
+                {
+                    model: List,
+                    as: "lists",
+                    attributes: {
+                        exclude: ["BoardId"],
+                    },
+                },
+            ],
         });
 
         if (!board) {
@@ -179,8 +189,8 @@ async function addMemmberToBoard(req, res, next) {
                 [Op.and]: {
                     id: userId,
                     deleted: false,
-                }
-            }
+                },
+            },
         });
 
         if (!user) {
@@ -206,7 +216,9 @@ async function addMemmberToBoard(req, res, next) {
             role: enums.role[role],
         });
 
-        res.status(200).json({ message: resources.addMemmberToBoardSuccessfully });
+        res.status(200).json({
+            message: resources.addMemmberToBoardSuccessfully,
+        });
     } catch (error) {
         next(error);
     }
@@ -247,7 +259,9 @@ async function removeMemberFromBoard(req, res, next) {
             },
         });
 
-        res.status(200).json({ message: resources.removeMemberFromBoardSuccessfully });
+        res.status(200).json({
+            message: resources.removeMemberFromBoardSuccessfully,
+        });
     } catch (error) {
         next(error);
     }

@@ -1,23 +1,18 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class List extends Model {
-    static associate(models) {
-        // List.hasMany(models.Card, { foreignKey: "ListId" });
-    }
-}
+class Checklistitem extends Model {}
 
-List.init(
+Checklistitem.init(
     {
         title: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        position: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
+        dueDate: {
+            type: DataTypes.DATE,
         },
-        closed: {
+        checked: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
@@ -27,4 +22,4 @@ List.init(
     }
 );
 
-module.exports = List;
+module.exports = Checklistitem;

@@ -1,15 +1,16 @@
-const express = require("express")
-const {createAttachment,
+const express = require("express");
+const {
+    createAttachment,
     updateAttachment,
     deleteAttachment,
-    getAllAttachmentsByCardId} = require("../controllers/attachment")
-
+    getAllAttachmentsByCardId,
+} = require("../controllers/attachment");
 
 const router = express.Router();
 
-router.post("/create",createAttachment)
-router.put("/update",updateAttachment)
-router.delete("/delete",deleteAttachment)
-router.get("/getall",getAllAttachmentsByCardId)
+router.post("/create", createAttachment);
+router.put("/update", updateAttachment);
+router.delete("/delete", deleteAttachment);
+router.get("/getall", getAllAttachmentsByCardId);
 
 module.exports = router;

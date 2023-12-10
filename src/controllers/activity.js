@@ -1,7 +1,7 @@
-const Activity = require('../models/activity');
+const Activity = require("../models/activity");
 
 // Hàm tạo một hoạt động mới
-const createActivity = async (req, res) => {
+const createActivity = async (req, res, next) => {
     const { userId, cardId, content } = req.body;
 
     try {
@@ -11,10 +11,10 @@ const createActivity = async (req, res) => {
             content,
         });
 
-        res.json(newActivity);
+        res.status(201).json(newActivity);
     } catch (error) {
-        console.error('Error creating activity:', error);
-        res.status(500).json({ error: 'Could not create activity' });
+        console.error("Error creating activity:", error);
+        throw new Error("Could not create activity");
     }
 };
 
@@ -27,13 +27,14 @@ const getActivitiesByCardId = async (req, res) => {
             where: { cardId },
         });
 
-        res.json(activities);
+        res.status(200).json(activities);
     } catch (error) {
-        console.error('Error fetching activities by cardId:', error);
-        res.status(500).json({ error: 'Could not fetch activities by cardId' });
+        console.error("Error fetching activities by cardId:", error);
+        throw new Error("Could not fetch activities by cardId");
     }
 };
 
 module.exports = {
-    getActivitiesByCardId, createActivity,
+    getActivitiesByCardId,
+    createActivity,
 };

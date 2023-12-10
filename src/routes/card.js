@@ -1,12 +1,23 @@
 const express = require("express");
 const {
-    createNewCard, updateCard, addMemberToCard, addOrUpdateCoverImage, deleteCard, setCardDueDates, moveCardToNewList, showAllCardsInList,
-    createCardLabelRelation, deleteCardLabelRelation, getCardLabels
-} = require("../controllers/card")
+    createNewCard,
+    updateCard,
+    addMemberToCard,
+    addOrUpdateCoverImage,
+    deleteCard,
+    setCardDueDates,
+    moveCardToNewList,
+    showAllCardsInList,
+    createCardLabelRelation,
+    deleteCardLabelRelation,
+    getCardLabels,
+    getCardById,
+} = require("../controllers/card");
 
 const {
-    getActivitiesByCardId, createActivity,
-} = require("../controllers/activity")
+    getActivitiesByCardId,
+    createActivity,
+} = require("../controllers/activity");
 
 const router = express.Router();
 
@@ -23,5 +34,6 @@ router.get("/allcardlabelrelation/:cardId", getCardLabels)
 router.get("/showallcardinlist/:listId", showAllCardsInList)
 router.post("/log/create", createActivity)
 router.get("/log/getall/:cardId", getActivitiesByCardId)
+router.get("/:id", getCardById);
 
-module.exports = router
+module.exports = router;

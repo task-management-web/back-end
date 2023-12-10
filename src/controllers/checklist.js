@@ -1,16 +1,18 @@
-const Checklist = require('../models/check_list');
+const Checklist = require("../models/checklist");
 
 // Tạo checklist mới
-const createChecklist = async (req, res) => {
+const createChecklist = async (req, res, next) => {
+    const { title, cardId } = req.body;
+
     try {
         const { title, cardId } = req.body;
 
         const newChecklist = await Checklist.create({
             title,
-            cardId,
+            CardId: cardId,
         });
 
-        return res.json(newChecklist);
+        res.status(201).json(newChecklist);
     } catch (error) {
         console.error('Error creating checklist:', error);
         return res.status(500).json({ error: 'Could not create checklist' });
@@ -18,7 +20,9 @@ const createChecklist = async (req, res) => {
 };
 
 // Cập nhật checklist
-const updateChecklist = async (req, res) => {
+const updateChecklist = async (req, res, next) => {
+    const { checklistId, newTitle } = req.body;
+
     try {
         const { checklistId, newTitle } = req.body;
 
@@ -31,7 +35,7 @@ const updateChecklist = async (req, res) => {
         checklistToUpdate.title = newTitle;
         await checklistToUpdate.save();
 
-        return res.json(checklistToUpdate);
+        res.status(200).json(checklistToUpdate);
     } catch (error) {
         console.error('Error updating checklist:', error);
         return res.status(500).json({ error: 'Could not update checklist' });
@@ -40,7 +44,8 @@ const updateChecklist = async (req, res) => {
 
 
 // Xóa checklist
-const deleteChecklist = async (req, res) => {
+const deleteChecklist = async (req, res, next) => {
+    const { checklistId } = req.body;
     try {
         const { checklistId } = req.body;
 
@@ -51,8 +56,8 @@ const deleteChecklist = async (req, res) => {
         }
 
         await checklistToDelete.destroy();
-
-        return res.json({ message: 'Checklist deleted successfully' });
+        
+        res.status(200).json({ message: "Checklist deleted successfully" });
     } catch (error) {
         console.error('Error deleting checklist:', error);
         return res.status(500).json({ error: 'Could not delete checklist' });
