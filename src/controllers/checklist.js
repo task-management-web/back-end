@@ -1,4 +1,4 @@
-const Checklist = require('../models/checklist');
+const Checklist = require("../models/checklist");
 
 // Tạo checklist mới
 const createChecklist = async (req, res, next) => {
@@ -12,45 +12,48 @@ const createChecklist = async (req, res, next) => {
 
         res.status(201).json(newChecklist);
     } catch (error) {
-        console.error('Error creating checklist:', error);
-        throw new Error('Could not create checklist');
+        console.error("Error creating checklist:", error);
+        throw new Error("Could not create checklist");
     }
 };
 
 // Cập nhật checklist
-const updateChecklist = async (checklistId, newTitle) => {
+const updateChecklist = async (req, res, next) => {
+    const { checklistId, newTitle } = req.body;
+
     try {
         const checklistToUpdate = await Checklist.findByPk(checklistId);
 
         if (!checklistToUpdate) {
-            throw new Error('Checklist not found');
+            throw new Error("Checklist not found");
         }
 
         checklistToUpdate.title = newTitle;
         await checklistToUpdate.save();
 
-        return checklistToUpdate;
+        res.status(200).json(checklistToUpdate);
     } catch (error) {
-        console.error('Error updating checklist:', error);
-        throw new Error('Could not update checklist');
+        console.error("Error updating checklist:", error);
+        throw new Error("Could not update checklist");
     }
 };
 
 // Xóa checklist
-const deleteChecklist = async (checklistId) => {
+const deleteChecklist = async (req, res, next) => {
+    const { checklistId } = req.body;
     try {
         const checklistToDelete = await Checklist.findByPk(checklistId);
 
         if (!checklistToDelete) {
-            throw new Error('Checklist not found');
+            throw new Error("Checklist not found");
         }
 
         await checklistToDelete.destroy();
 
-        return { message: 'Checklist deleted successfully' };
+        res.status(200).json({ message: "Checklist deleted successfully" });
     } catch (error) {
-        console.error('Error deleting checklist:', error);
-        throw new Error('Could not delete checklist');
+        console.error("Error deleting checklist:", error);
+        throw new Error("Could not delete checklist");
     }
 };
 

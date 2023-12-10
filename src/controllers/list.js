@@ -1,7 +1,7 @@
 const Card = require("../models/card");
 const List = require("../models/list");
 
-const createNewList = async (req, res) => {
+const createNewList = async (req, res, next) => {
     try {
         const newList = await List.create({
             title: req.body.title,
@@ -9,14 +9,14 @@ const createNewList = async (req, res) => {
             BoardId: req.body.boardId,
         });
 
-        res.json(newList);
+        res.status(201).json(newList);
     } catch (error) {
         console.error("Error creating list:", error);
         throw new Error("Could not create list");
     }
 };
 
-const deleteList = async (req, res) => {
+const deleteList = async (req, res, next) => {
     try {
         const listId = req.params.id;
         const listToDelete = await List.findByPk(listId);
@@ -25,14 +25,14 @@ const deleteList = async (req, res) => {
         }
         await listToDelete.destroy();
 
-        res.json({ message: "List deleted successfully" });
+        res.status(200).json({ message: "List deleted successfully" });
     } catch (error) {
         console.error("Error deleting list:", error);
         res.status(500).json({ error: "Could not delete list" });
     }
 };
 
-const updateList = async (req, res) => {
+const updateList = async (req, res, next) => {
     try {
         const listId = req.params.id;
         const listToUpdate = await List.findByPk(listId);
@@ -45,18 +45,21 @@ const updateList = async (req, res) => {
 
         await listToUpdate.save();
 
-        res.json({ message: "List updated successfully", list: listToUpdate });
+        res.status(200).json({
+            message: "List updated successfully",
+            list: listToUpdate,
+        });
     } catch (error) {
         console.error("Error updating list:", error);
         res.status(500).json({ error: "Could not update list" });
     }
 };
 
-const getAllLists = async (req, res) => {
+const getAllLists = async (req, res, next) => {
     try {
         const allLists = await List.findAll();
 
-        res.json(allLists);
+        res.status(200).json(allLists);
     } catch (error) {
         console.error("Error fetching all lists:", error);
         res.status(500).json({ error: "Could not fetch all lists" });
