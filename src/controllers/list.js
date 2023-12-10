@@ -1,8 +1,6 @@
 const List = require('../models/list');
 
-
-
-const createNewList = async (req, res, next) => {
+const createNewList = async (req, res) => {
     try {
         const newList = await List.create({
             title: req.body.title,
@@ -32,9 +30,41 @@ const deleteList = async (req, res) => {
         res.status(500).json({ error: 'Could not delete list' });
     }
 };
+const updateList = async (req, res) => {
+    try {
+        const listId = req.params.id;
+        const listToUpdate = await List.findByPk(listId);
+        if (!listToUpdate) {
+            return res.status(404).json({ error: 'List not found' });
+        }
+
+        
+        listToUpdate.title = req.body.title || listToUpdate.title;
+        listToUpdate.position = req.body.position || listToUpdate.position;
+
+        await listToUpdate.save();
+
+        res.json({ message: 'List updated successfully', list: listToUpdate });
+    } catch (error) {
+        console.error('Error updating list:', error);
+        res.status(500).json({ error: 'Could not update list' });
+    }
+};
+
+const getAllLists = async (req, res) => {
+    try {
+        const allLists = await List.findAll();
+
+        res.json(allLists);
+    } catch (error) {
+        console.error('Error fetching all lists:', error);
+        res.status(500).json({ error: 'Could not fetch all lists' });
+    }
+};
+
 
  
 
 module.exports = {
-    createNewList, deleteList
+    createNewList, deleteList, updateList, getAllLists
 }

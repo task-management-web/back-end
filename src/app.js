@@ -23,7 +23,7 @@ app.use(errorHandler);
 
 const List = require("./models/list");
 const Activity = require("./models/activity");
-const Cardlabel = require("./models/card_laber");
+const Cardlabel = require("./models/card_label");
 const CardMember = require("./models/card_member");
 const Checklist = require("./models/check_list");
 const Label = require("./models/label");
