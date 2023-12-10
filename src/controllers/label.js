@@ -62,16 +62,11 @@ const deleteLabel = async (req, res, next) => {
 // Hiển thị thông tin label
 const getAllLabels = async (req, res, next) => {
     try {
-        const labels = await Label.findAll({
-            where: {
-                color: "red",
-            },
-        });
-
+        const labels = await Label.findAll();
         res.status(200).json(labels);
     } catch (error) {
-        console.error("Error fetching labels by color:", error);
-        throw new Error("Could not fetch labels by color");
+        console.error('Error fetching labels:', error);
+        res.status(500).json({ error: 'Could not fetch labels' });
     }
 };
 

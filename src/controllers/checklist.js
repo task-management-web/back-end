@@ -5,6 +5,8 @@ const createChecklist = async (req, res, next) => {
     const { title, cardId } = req.body;
 
     try {
+        const { title, cardId } = req.body;
+
         const newChecklist = await Checklist.create({
             title,
             CardId: cardId,
@@ -12,8 +14,8 @@ const createChecklist = async (req, res, next) => {
 
         res.status(201).json(newChecklist);
     } catch (error) {
-        console.error("Error creating checklist:", error);
-        throw new Error("Could not create checklist");
+        console.error('Error creating checklist:', error);
+        return res.status(500).json({ error: 'Could not create checklist' });
     }
 };
 
@@ -22,10 +24,12 @@ const updateChecklist = async (req, res, next) => {
     const { checklistId, newTitle } = req.body;
 
     try {
+        const { checklistId, newTitle } = req.body;
+
         const checklistToUpdate = await Checklist.findByPk(checklistId);
 
         if (!checklistToUpdate) {
-            throw new Error("Checklist not found");
+            return res.status(404).json({ error: 'Checklist not found' });
         }
 
         checklistToUpdate.title = newTitle;
@@ -33,32 +37,55 @@ const updateChecklist = async (req, res, next) => {
 
         res.status(200).json(checklistToUpdate);
     } catch (error) {
-        console.error("Error updating checklist:", error);
-        throw new Error("Could not update checklist");
+        console.error('Error updating checklist:', error);
+        return res.status(500).json({ error: 'Could not update checklist' });
     }
 };
+
 
 // Xóa checklist
 const deleteChecklist = async (req, res, next) => {
     const { checklistId } = req.body;
     try {
+        const { checklistId } = req.body;
+
         const checklistToDelete = await Checklist.findByPk(checklistId);
 
         if (!checklistToDelete) {
-            throw new Error("Checklist not found");
+            return res.status(404).json({ error: 'Checklist not found' });
         }
 
         await checklistToDelete.destroy();
-
+        
         res.status(200).json({ message: "Checklist deleted successfully" });
     } catch (error) {
-        console.error("Error deleting checklist:", error);
-        throw new Error("Could not delete checklist");
+        console.error('Error deleting checklist:', error);
+        return res.status(500).json({ error: 'Could not delete checklist' });
     }
 };
+
+// Hiển thị tất cả checklist
+const showChecklistsByCardId = async (req, res) => {
+    try {
+        const { cardId } = req.params;
+
+        const checklists = await Checklist.findAll({
+            where: {
+                cardId: cardId
+            }
+        });
+
+        return res.json(checklists);
+    } catch (error) {
+        console.error('Error fetching checklists:', error);
+        return res.status(500).json({ error: 'Could not fetch checklists' });
+    }
+};
+
 
 module.exports = {
     createChecklist,
     updateChecklist,
     deleteChecklist,
+    showChecklistsByCardId
 };

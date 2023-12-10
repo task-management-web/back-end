@@ -170,14 +170,16 @@ const deleteCard = async (req, res) => {
 };
 
 // Tạo mối quan hệ giữa card và label
-const createCardLabelRelation = async (cardId, labelId) => {
+const createCardLabelRelation = async (req, res) => {
+    const { cardId, labelId } = req.body;
+
     try {
         const newCardLabelRelation = await Cardlabel.create({
             cardId,
             labelId,
         });
 
-        return newCardLabelRelation;
+        res.json(newCardLabelRelation);
     } catch (error) {
         console.error("Error creating card-label relation:", error);
         throw new Error("Could not create card-label relation");
@@ -185,36 +187,41 @@ const createCardLabelRelation = async (cardId, labelId) => {
 };
 
 // Xóa mối quan hệ giữa card và label
-const deleteCardLabelRelation = async (cardId, labelId) => {
+const deleteCardLabelRelation = async (req, res) => {
+    const { cardId, labelId } = req.body;
+
     try {
         const cardLabelToDelete = await Cardlabel.findOne({
             where: { cardId, labelId },
         });
 
         if (!cardLabelToDelete) {
-            throw new Error("Card-label relation not found");
+            res.status(404).json({ error: 'Card-label relation not found' });
         }
 
         await cardLabelToDelete.destroy();
 
-        return { message: "Card-label relation deleted successfully" };
+        res.json({ message: 'Card-label relation deleted successfully' });
     } catch (error) {
-        console.error("Error deleting card-label relation:", error);
-        throw new Error("Could not delete card-label relation");
+        console.error('Error deleting card-label relation:', error);
+        res.status(500).json({ error: 'Could not delete card-label relation' });
     }
 };
 
+
 // Hiển thị các mối quan hệ card và label
-const getCardLabels = async (cardId) => {
+const getCardLabels = async (req, res) => {
+    const { cardId } = req.params;
+
     try {
         const cardLabels = await Cardlabel.findAll({
             where: { cardId },
         });
 
-        return cardLabels;
+        res.json(cardLabels);
     } catch (error) {
-        console.error("Error fetching card labels:", error);
-        throw new Error("Could not fetch card labels");
+        console.error('Error fetching card labels:', error);
+        res.status(500).json({ error: 'Could not fetch card labels' });
     }
 };
 

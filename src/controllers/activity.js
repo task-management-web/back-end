@@ -6,9 +6,9 @@ const createActivity = async (req, res, next) => {
 
     try {
         const newActivity = await Activity.create({
-            userId: userId,
-            cardId: cardId,
-            content: content,
+            userId,
+            cardId,
+            content,
         });
 
         res.status(201).json(newActivity);
@@ -19,12 +19,12 @@ const createActivity = async (req, res, next) => {
 };
 
 // lấy tất cả hoạt động theo cardId
-const getActivitiesByCardId = async (cardId) => {
+const getActivitiesByCardId = async (req, res) => {
+    const { cardId } = req.params;
+
     try {
         const activities = await Activity.findAll({
-            where: {
-                cardId: cardId,
-            },
+            where: { cardId },
         });
 
         res.status(200).json(activities);

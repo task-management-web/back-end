@@ -3,6 +3,7 @@ const {
     createChecklist,
     updateChecklist,
     deleteChecklist,
+    showChecklistsByCardId,
 } = require("../controllers/checklist");
 
 const router = express.Router();
