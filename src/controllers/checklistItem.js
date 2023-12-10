@@ -15,7 +15,9 @@ const createChecklistItem = async (req, res, next) => {
         res.status(201).json(newChecklistItem);
     } catch (error) {
         console.error("Error creating checklist item:", error);
-        throw new Error("Could not create checklist item");
+        return res
+            .status(500)
+            .json({ error: "Could not create checklist item" });
     }
 };
 
@@ -29,7 +31,7 @@ const updateChecklistItem = async (req, res, next) => {
         );
 
         if (!checklistItemToUpdate) {
-            throw new Error("Checklist item not found");
+            return res.status(404).json({ error: "Checklist item not found" });
         }
 
         // Cập nhật chỉ được áp dụng với người tạo checklist item
@@ -46,7 +48,9 @@ const updateChecklistItem = async (req, res, next) => {
         res.status(200).json(checklistItemToUpdate);
     } catch (error) {
         console.error("Error updating checklist item:", error);
-        throw new Error("Could not update checklist item");
+        return res
+            .status(500)
+            .json({ error: "Could not update checklist item" });
     }
 };
 
@@ -59,7 +63,7 @@ const deleteChecklistItem = async (req, res, next) => {
         const checklistItemToDelete = await ChecklistItem.findByPk(id);
 
         if (!checklistItemToDelete) {
-            throw new Error("Checklist item not found");
+            return res.status(404).json({ error: "Checklist item not found" });
         }
 
         // Xóa chỉ khi người dùng là người tạo checklist item
@@ -76,7 +80,9 @@ const deleteChecklistItem = async (req, res, next) => {
         });
     } catch (error) {
         console.error("Error deleting checklist item:", error);
-        throw new Error("Could not delete checklist item");
+        return res
+            .status(500)
+            .json({ error: "Could not delete checklist item" });
     }
 };
 
@@ -92,7 +98,7 @@ const getChecklistItemsByChecklistId = async (req, res, next) => {
         res.status(200).json(checklistItems);
     } catch (error) {
         console.error("Error fetching checklist items:", error);
-        throw new Error("Could not fetch checklist items");
+        res.status(500).json({ error: "Could not fetch checklist items" });
     }
 };
 
@@ -105,7 +111,7 @@ const updateChecklistItemCheckedStatus = async (req, res, next) => {
         const checklistItemToUpdate = await ChecklistItem.findByPk(id);
 
         if (!checklistItemToUpdate) {
-            throw new Error("Checklist item not found");
+            return res.status(404).json({ error: "Checklist item not found" });
         }
 
         checklistItemToUpdate.checked = newCheckedStatus;
@@ -114,7 +120,7 @@ const updateChecklistItemCheckedStatus = async (req, res, next) => {
         res.status(200).json(checklistItemToUpdate);
     } catch (error) {
         console.error("Error updating checklist item:", error);
-        throw new Error("Could not update checklist item");
+        res.status(500).json({ error: "Could not update checklist item" });
     }
 };
 
