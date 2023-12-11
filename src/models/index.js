@@ -19,6 +19,9 @@ const Comment = require("./comment");
 Board.belongsToMany(User, { through: BoardMember, as: "users" });
 User.belongsToMany(Board, { through: BoardMember, as: "boards" });
 
+Card.belongsToMany(Label, { through: CardLabel, as: "labels" });
+Label.belongsToMany(Card, { through: CardLabel, as: "cards" });
+
 Board.hasMany(List, { as: "lists" });
 List.belongsTo(Board);
 
@@ -36,9 +39,6 @@ Checklist.belongsTo(Card);
 
 Card.hasMany(Comment, { as: "comments" });
 Comment.belongsTo(Card);
-
-Card.belongsToMany(Label, { through: CardLabel});
-Label.belongsToMany(Card, { through: CardLabel});
 
 Checklist.hasMany(ChecklistItem, { as: "checklistItems" });
 ChecklistItem.belongsTo(Checklist);

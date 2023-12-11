@@ -1,13 +1,13 @@
 const Card = require("../models/card");
 const CardMember = require("../models/card_member");
-// const Cardlabel = require("../models/card_label");
 const Attachment = require("../models/attachment");
 const Checklist = require("../models/checklist");
 const ChecklistItem = require("../models/checklistItem");
 const Comment = require("../models/comment");
+const Label = require("../models/label");
+const CardLabel = require("../models/cardLabel");
 
 const { Op } = require("sequelize");
-const CardLabel = require("../models/cardLabel");
 const resources = require("../helpers/resources");
 const BadRequest = require("../errors/BadRequest");
 
@@ -272,6 +272,13 @@ const getCardById = async (req, res, next) => {
                         exclude: ["CardId"],
                     },
                 },
+                {
+                    model: Label,
+                    as: "labels",
+                    through: {
+                        attributes: [],
+                    },
+                },
             ],
         });
 
@@ -312,6 +319,43 @@ const addLabelToCard = async (req, res, next) => {
     }
 };
 
+/*
+ * Remove a label from a card.
+ */
+const removeLabelFromCard = async (req, res, next) => {
+    const { cardId, labelId } = req.params;
+
+    try {
+        const cardLabel = await CardLabel.findOne({
+            where: {
+                CardId: cardId,
+                LabelId: labelId,
+            },
+        });
+
+        if (!cardLabel) {
+            throw new BadRequest({
+                message: resources.labelHasNotBeenAddedToCard,
+            });
+        }
+
+        await CardLabel.destroy({
+            where: {
+                [Op.and]: {
+                    CardId: cardId,
+                    LabelId: labelId,
+                },
+            },
+        });
+
+        res.status(200).json({
+            message: resources.removeLabelFromCardSuccessfully,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createNewCard,
     updateCard,
@@ -326,4 +370,5 @@ module.exports = {
     getCardLabels,
     getCardById,
     addLabelToCard,
+    removeLabelFromCard,
 };

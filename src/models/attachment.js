@@ -14,8 +14,4 @@ Attachment.init(
     }
 );
 
-(async () => {
-    await Attachment.sync({ force: true });
-})();
-
 module.exports = Attachment;
