@@ -3,11 +3,12 @@ const Label = require("../models/label");
 // Tạo label mới
 const createLabel = async (req, res, next) => {
     try {
-        const { title, color } = req.body;
+        const { title, color, boardId } = req.body;
 
         const newLabel = await Label.create({
             title,
             color,
+            BoardId: boardId,
         });
 
         res.status(201).json(newLabel);
@@ -65,8 +66,8 @@ const getAllLabels = async (req, res, next) => {
         const labels = await Label.findAll();
         res.status(200).json(labels);
     } catch (error) {
-        console.error('Error fetching labels:', error);
-        res.status(500).json({ error: 'Could not fetch labels' });
+        console.error("Error fetching labels:", error);
+        res.status(500).json({ error: "Could not fetch labels" });
     }
 };
 

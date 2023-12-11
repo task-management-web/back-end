@@ -20,6 +20,9 @@ async function getAllBoards(req, res, next) {
 
     try {
         const boards = await Board.findAll({
+            where: {
+                closed: false,
+            },
             include: {
                 model: User,
                 as: "users",
@@ -53,8 +56,22 @@ async function getBoardById(req, res, next) {
                 {
                     model: User,
                     as: "users",
+                    attributes: {
+                        exclude: [
+                            "password",
+                            "deleted",
+                            "createdAt",
+                            "updatedAt",
+                        ],
+                    },
                     where: {
-                        id: req.user.id,
+                        deleted: false,
+                    },
+                    required: false,
+                    through: {
+                        attributes: {
+                            exclude: ["BoardId", "UserId"],
+                        },
                     },
                 },
                 {
@@ -63,6 +80,10 @@ async function getBoardById(req, res, next) {
                     attributes: {
                         exclude: ["BoardId"],
                     },
+                    where: {
+                        closed: false,
+                    },
+                    required: false,
                 },
             ],
         });

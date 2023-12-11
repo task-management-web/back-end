@@ -1,11 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class Label extends Model {
-    static associate(models) {
-        Label.hasMany(models.Cardlabel, { foreignKey: "labelId" });
-    }
-}
+class Label extends Model {}
 
 Label.init(
     {
