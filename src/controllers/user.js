@@ -2,8 +2,10 @@ const bcrypt = require("bcrypt");
 const resources = require("../helpers/resources");
 const BadRequest = require("../errors/BadRequest");
 const Conflict = require("../errors/Conflict");
+const NotFound = require("../errors/NotFound");
 const User = require("../models/user");
 
+const { Op } = require("sequelize");
 const { isNullOrEmptyString, addError } = require("../helpers/common");
 
 const {
@@ -202,10 +204,48 @@ async function changePassword(req, res, next) {
     }
 }
 
+/*
+ * Search for users by full name, user name or email.
+ */
+async function searchUsers(req, res, next) {
+    const { keyword } = req.query;
+    const query = `%${keyword}%`;
+
+    try {
+        const users = await User.findAll({
+            where: {
+                [Op.and]: {
+                    [Op.or]: {
+                        fullName: {
+                            [Op.like]: query,
+                        },
+                        userName: {
+                            [Op.like]: query,
+                        },
+                        email: {
+                            [Op.like]: query,
+                        },
+                    },
+                    deleted: false,
+                },
+            },
+        });
+
+        if (!users) {
+            throw new NotFound();
+        }
+
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     getUser,
     createUser,
     updateUser,
     deleteUser,
+    searchUsers,
     changePassword,
 };

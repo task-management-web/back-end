@@ -5,6 +5,7 @@ const {
     createUser,
     updateUser,
     deleteUser,
+    searchUsers,
     changePassword,
 } = require("../controllers/user");
 
@@ -15,6 +16,7 @@ router.use("/", verifyToken);
 router.get("/", getUser);
 router.put("/", updateUser);
 router.delete("/", deleteUser);
+router.get("/search", searchUsers);
 router.put("/change-password", changePassword);
 
 module.exports = router;
