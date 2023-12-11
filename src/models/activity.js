@@ -1,18 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class Activity extends Model {
-    static associate(models) {
-        Activity.belongsTo(models.Card, {
-            foreignKey: "cardId",
-            targetKey: "id",
-        });
-        Activity.belongsTo(models.User, {
-            foreignKey: "userId",
-            targetKey: "id",
-        });
-    }
-}
+class Activity extends Model {}
 
 Activity.init(
     {
@@ -31,7 +20,6 @@ Activity.init(
     },
     {
         sequelize,
-        modelName: "Activity", // Tên của mô hình
     }
 );
 
