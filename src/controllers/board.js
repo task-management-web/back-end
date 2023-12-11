@@ -100,6 +100,18 @@ async function getBoardById(req, res, next) {
             return next(new NotFound(resources.boardDoesNotExist));
         }
 
+        const isAdmin = await BoardMember.findOne({
+            where: {
+                [Op.and]: {
+                    UserId: req.user.id,
+                    BoardId: req.params.id,
+                    role: 0,
+                }
+            }
+        });
+
+        board.dataValues.isAdmin = isAdmin ? true : false;
+
         res.status(200).json(board);
     } catch (error) {
         next(error);
@@ -203,9 +215,10 @@ async function closeBoard(req, res, next) {
 async function addMemmberToBoard(req, res, next) {
     const boardId = req.params.boardId;
     const userId = req.params.userId;
-    const role = req.query.role;
 
     try {
+        const role = Number(req.query.role);
+
         // Kiểm tra người thực hiện có phải admin của board hay không
         if (!isAdminOfBoard(req.user.id, boardId)) {
             throw new Forbidden();
@@ -241,7 +254,7 @@ async function addMemmberToBoard(req, res, next) {
         await BoardMember.create({
             BoardId: boardId,
             UserId: userId,
-            role: enums.role[role],
+            role,
         });
 
         res.status(200).json({
@@ -258,9 +271,10 @@ async function addMemmberToBoard(req, res, next) {
 async function changeMemberRole(req, res, next) {
     const boardId = req.params.boardId;
     const userId = req.params.userId;
-    const role = req.query.role;
 
     try {
+        const role = Number(req.query.role);
+
         // Kiểm tra người thực hiện có phải admin của board hay không
         if (!isAdminOfBoard(req.user.id, boardId)) {
             throw new Forbidden();
@@ -292,9 +306,9 @@ async function changeMemberRole(req, res, next) {
             throw new BadRequest(resources.userIsNotAMember);
         }
 
-        if (member.role !== enums.role[role]) {
+        if (member.role !== role) {
             await member.update({
-                role: enums.role[role],
+                role,
             });
         }
 

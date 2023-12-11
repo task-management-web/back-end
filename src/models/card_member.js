@@ -1,12 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../configs/connectDb");
 
-class CardMember extends Model {
-    static associate(models) {
-        CardMember.belongsTo(models.Card, { foreignKey: "cardId" });
-        CardMember.belongsTo(models.User, { foreignKey: "userId" });
-    }
-}
+class CardMember extends Model {}
 
 CardMember.init(
     {
