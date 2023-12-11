@@ -1,3 +1,4 @@
+const CardLabel = require("../models/cardLabel");
 const Label = require("../models/label");
 
 // Tạo label mới
@@ -43,13 +44,19 @@ const updateLabel = async (req, res, next) => {
 // Xóa label
 const deleteLabel = async (req, res, next) => {
     try {
-        const { labelId } = req.body;
+        const id = req.params.id;
 
-        const labelToDelete = await Label.findByPk(labelId);
+        const labelToDelete = await Label.findByPk(id);
 
         if (!labelToDelete) {
             return res.status(404).json({ error: "Label not found" });
         }
+
+        await CardLabel.destroy({
+            where: {
+                LabelId: id,
+            },
+        });
 
         await labelToDelete.destroy();
 
