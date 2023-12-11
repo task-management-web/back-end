@@ -42,7 +42,7 @@ const updateAttachment = async (req, res, next) => {
 // Xóa attachment
 const deleteAttachment = async (req, res, next) => {
     try {
-        const { attachmentId } = req.body;
+        const attachmentId = req.params.id;
 
         const attachmentToDelete = await Attachment.findByPk(attachmentId);
 

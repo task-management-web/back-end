@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/create", createChecklistItem);
 router.put("/update", updateChecklistItem);
-router.delete("/delete", deleteChecklistItem);
+router.delete("/delete/:id", deleteChecklistItem);
 router.get("/getbychecklistid/:checklistId", getChecklistItemsByChecklistId);
 router.put("/getstatus/:checklistItemId", updateChecklistItemCheckedStatus);
 

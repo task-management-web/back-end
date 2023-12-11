@@ -49,7 +49,7 @@ const updateComment = async (req, res, next) => {
 // Xóa comment
 const deleteComment = async (req, res, next) => {
     try {
-        const { userId, commentId } = req.body;
+        const commentId = req.params.id;
 
         const commentToDelete = await Comment.findByPk(commentId);
 
@@ -58,11 +58,11 @@ const deleteComment = async (req, res, next) => {
         }
 
         // Chỉ cho phép người viết comment xóa comment của mình
-        if (userId !== commentToDelete.userId) {
-            return res
-                .status(403)
-                .json({ error: "You are not allowed to delete this comment" });
-        }
+        // if (userId !== commentToDelete.userId) {
+        //     return res
+        //         .status(403)
+        //         .json({ error: "You are not allowed to delete this comment" });
+        // }
 
         await commentToDelete.destroy();
 

@@ -56,10 +56,9 @@ const updateChecklistItem = async (req, res, next) => {
 
 // Xóa checklist item
 const deleteChecklistItem = async (req, res, next) => {
-    const { userId, checklistItemId } = req.body;
+    const id = req.params.id;
 
     try {
-        const id = checklistItemId;
         const checklistItemToDelete = await ChecklistItem.findByPk(id);
 
         if (!checklistItemToDelete) {
@@ -67,11 +66,11 @@ const deleteChecklistItem = async (req, res, next) => {
         }
 
         // Xóa chỉ khi người dùng là người tạo checklist item
-        if (userId !== checklistItemToDelete.userId) {
-            throw new Error(
-                "You are not allowed to delete this checklist item"
-            );
-        }
+        // if (userId !== checklistItemToDelete.userId) {
+        //     throw new Error(
+        //         "You are not allowed to delete this checklist item"
+        //     );
+        // }
 
         await checklistItemToDelete.destroy();
 

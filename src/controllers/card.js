@@ -158,14 +158,17 @@ const showAllCardsInList = async (req, res) => {
 // Xóa thẻ
 const deleteCard = async (req, res) => {
     try {
-        const id = req.params.cardId;
+        const id = req.params.id;
 
         const cardToDelete = await Card.findByPk(id);
+
         if (!cardToDelete) {
             return res.status(404).json({ error: "Card not found" });
         }
 
-        await cardToDelete.destroy();
+        await cardToDelete.update({
+            closed: true,
+        });
 
         res.json({ message: "Card deleted successfully" });
     } catch (error) {

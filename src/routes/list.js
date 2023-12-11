@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/create", createNewList);
 router.put("/update", updateList);
-router.delete("/delete", deleteList);
+router.delete("/delete/:id", deleteList);
 router.get("/showalllist", getAllLists);
 router.get("/:id", getListById);
 

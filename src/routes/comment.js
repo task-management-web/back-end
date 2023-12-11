@@ -11,6 +11,6 @@ const router = express.Router();
 
 router.post("/create", createComment);
 router.put("/update", updateComment);
-router.delete("/delete", deleteComment);
+router.delete("/delete/:id", deleteComment);
 router.get("/getallcommentbycardid/:cardId", getCommentsByCardId);
 module.exports = router;
