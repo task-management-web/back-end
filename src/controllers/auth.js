@@ -61,7 +61,6 @@ async function login(req, res, next) {
 
 /*
  * Log out.
- * TODO: Quản lý token để đăng xuất nghiêm ngặt hơn.
  */
 function logout(req, res, next) {
     res.status(200).json({ message: resources.logOutSuccessfully });

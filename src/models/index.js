@@ -6,10 +6,10 @@ const BoardMember = require("./boardMember");
 const List = require("./list");
 const User = require("./user");
 const Activity = require("./activity");
-const Cardlabel = require("./card_label");
 const CardMember = require("./card_member");
 const Label = require("./label");
 const Card = require("./card");
+const CardLabel = require("./cardLabel");
 const Attachment = require("./attachment");
 const Checklist = require("./checklist");
 const ChecklistItem = require("./checklistItem");
@@ -22,6 +22,9 @@ User.belongsToMany(Board, { through: BoardMember, as: "boards" });
 Board.hasMany(List, { as: "lists" });
 List.belongsTo(Board);
 
+Board.hasMany(Label, { as: "labels" });
+Label.belongsTo(Board);
+
 List.hasMany(Card, { as: "cards" });
 Card.belongsTo(List);
 
@@ -33,6 +36,9 @@ Checklist.belongsTo(Card);
 
 Card.hasMany(Comment, { as: "comments" });
 Comment.belongsTo(Card);
+
+Card.belongsToMany(Label, { through: CardLabel});
+Label.belongsToMany(Card, { through: CardLabel});
 
 Checklist.hasMany(ChecklistItem, { as: "checklistItems" });
 ChecklistItem.belongsTo(Checklist);

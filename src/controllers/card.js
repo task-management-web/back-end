@@ -1,10 +1,15 @@
 const Card = require("../models/card");
 const CardMember = require("../models/card_member");
-const Cardlabel = require("../models/card_label");
+// const Cardlabel = require("../models/card_label");
 const Attachment = require("../models/attachment");
 const Checklist = require("../models/checklist");
 const ChecklistItem = require("../models/checklistItem");
 const Comment = require("../models/comment");
+
+const { Op } = require("sequelize");
+const CardLabel = require("../models/cardLabel");
+const resources = require("../helpers/resources");
+const BadRequest = require("../errors/BadRequest");
 
 // Tạo thẻ mới
 const createNewCard = async (req, res) => {
@@ -196,18 +201,17 @@ const deleteCardLabelRelation = async (req, res) => {
         });
 
         if (!cardLabelToDelete) {
-            res.status(404).json({ error: 'Card-label relation not found' });
+            res.status(404).json({ error: "Card-label relation not found" });
         }
 
         await cardLabelToDelete.destroy();
 
-        res.json({ message: 'Card-label relation deleted successfully' });
+        res.json({ message: "Card-label relation deleted successfully" });
     } catch (error) {
-        console.error('Error deleting card-label relation:', error);
-        res.status(500).json({ error: 'Could not delete card-label relation' });
+        console.error("Error deleting card-label relation:", error);
+        res.status(500).json({ error: "Could not delete card-label relation" });
     }
 };
-
 
 // Hiển thị các mối quan hệ card và label
 const getCardLabels = async (req, res) => {
@@ -220,8 +224,8 @@ const getCardLabels = async (req, res) => {
 
         res.json(cardLabels);
     } catch (error) {
-        console.error('Error fetching card labels:', error);
-        res.status(500).json({ error: 'Could not fetch card labels' });
+        console.error("Error fetching card labels:", error);
+        res.status(500).json({ error: "Could not fetch card labels" });
     }
 };
 
@@ -234,7 +238,10 @@ const getCardById = async (req, res, next) => {
     try {
         const card = await Card.findOne({
             where: {
-                id: cardId,
+                [Op.and]: {
+                    id: cardId,
+                    closed: false,
+                },
             },
             include: [
                 {
@@ -274,6 +281,37 @@ const getCardById = async (req, res, next) => {
     }
 };
 
+/*
+ * Add a label to a card.
+ */
+const addLabelToCard = async (req, res, next) => {
+    const { cardId, labelId } = req.params;
+
+    try {
+        const cardLabel = await CardLabel.findOne({
+            where: {
+                CardId: cardId,
+                LabelId: labelId,
+            },
+        });
+
+        if (cardLabel) {
+            throw new BadRequest({
+                message: resources.labelAlreadyAddedInCard,
+            });
+        }
+
+        await CardLabel.create({
+            CardId: cardId,
+            LabelId: labelId,
+        });
+
+        res.status(200).json({ message: resources.addLabelToCardSuccessfully });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createNewCard,
     updateCard,
@@ -287,4 +325,5 @@ module.exports = {
     deleteCardLabelRelation,
     getCardLabels,
     getCardById,
+    addLabelToCard,
 };

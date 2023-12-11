@@ -1,3 +1,4 @@
+const NotFound = require("../errors/NotFound");
 const Card = require("../models/card");
 const List = require("../models/list");
 
@@ -80,8 +81,16 @@ const getListById = async (req, res, next) => {
                 attributes: {
                     exclude: ["ListId"],
                 },
+                where: {
+                    closed: false,
+                },
+                required: false,
             },
         });
+
+        if (!list) {
+            throw new NotFound();
+        }
 
         res.status(200).json(list);
     } catch (error) {

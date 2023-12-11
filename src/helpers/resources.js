@@ -1,8 +1,9 @@
 module.exports = {
+    addLabelToCardSuccessfully: "Thêm nhãn vào thẻ thành công.",
     addMemmberToBoardSuccessfully: "Thêm thành viên vào bảng thành công.",
     boardDescriptionExceedsAllowedLength:
         "Mô tả bảng không được vượt quá 65535 ký tự.",
-    boardDoesNotExist: "Bảng không tồn tại",
+    boardDoesNotExist: "Bảng không tồn tại.",
     boardTitleCannotBeEmpty: "Tên bảng không được để trống.",
     boardTitleExceedsAllowedLength: "Tên bảng không được vượt quá 255 ký tự.",
     changePasswordSuccessfully: "Đổi mật khẩu thành công",
@@ -19,6 +20,7 @@ module.exports = {
     fullNameExceedsAllowedLength: "Họ tên không được vượt quá 100 ký tự.",
     internalServerError: "Lỗi máy chủ.",
     invalidInput: "Đầu vào không hợp lệ.",
+    labelAlreadyAddedInCard: "Nhãn đã được thêm vào thẻ.",
     logOutSuccessfully: "Đăng xuất thành công.",
     notFound: "Không tìm thấy tài nguyên.",
     passwordCannotBeEmpty: "Mật khẩu không được để trống.",
