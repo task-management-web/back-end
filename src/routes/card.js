@@ -13,6 +13,7 @@ const {
     getCardLabels,
     getCardById,
     addLabelToCard,
+    removeLabelFromCard,
 } = require("../controllers/card");
 
 const {
@@ -37,5 +38,6 @@ router.post("/log/create", createActivity);
 router.get("/log/getall/:cardId", getActivitiesByCardId);
 router.get("/:id", getCardById);
 router.post("/:cardId/labels/:labelId", addLabelToCard);
+router.delete("/:cardId/labels/:labelId", removeLabelFromCard);
 
 module.exports = router;

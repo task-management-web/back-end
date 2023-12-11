@@ -2,6 +2,7 @@ const enums = require("../helpers/enums");
 const resources = require("../helpers/resources");
 const Board = require("../models/board");
 const BoardMember = require("../models/boardMember");
+const Label = require("../models/label");
 const List = require("../models/list");
 const User = require("../models/user");
 const BadRequest = require("../errors/BadRequest");
@@ -85,6 +86,13 @@ async function getBoardById(req, res, next) {
                     },
                     required: false,
                 },
+                {
+                    model: Label,
+                    as: "labels",
+                    attributes: {
+                        exclude: ["BoardId"],
+                    },
+                }
             ],
         });
 
