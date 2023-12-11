@@ -205,17 +205,7 @@ async function addMemmberToBoard(req, res, next) {
         });
 
         if (member) {
-            if (member.role !== enums.role[role]) {
-                await member.update({
-                    role: enums.role[role],
-                });
-
-                res.status(200).json({
-                    message: resources.updateMemmberRoleSuccessfully,
-                });
-            } else {
-                throw new BadRequest(resources.userAlreadyMemberOfBoard);
-            }
+            throw new BadRequest(resources.userAlreadyMemberOfBoard);
         }
 
         // Thêm bản ghi có boardId và userId tương ứng vào BoardMember
@@ -227,6 +217,60 @@ async function addMemmberToBoard(req, res, next) {
 
         res.status(200).json({
             message: resources.addMemmberToBoardSuccessfully,
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+/*
+ * Change member's role.
+ */
+async function changeMemberRole(req, res, next) {
+    const boardId = req.params.boardId;
+    const userId = req.params.userId;
+    const role = req.query.role;
+
+    try {
+        // Kiểm tra người thực hiện có phải admin của board hay không
+        if (!isAdminOfBoard(req.user.id, boardId)) {
+            throw new Forbidden();
+        }
+
+        // Kiểm tra người dùng cần thêm có tồn tại hay không
+        const user = await User.findOne({
+            where: {
+                [Op.and]: {
+                    id: userId,
+                    deleted: false,
+                },
+            },
+        });
+
+        if (!user) {
+            throw new BadRequest(resources.userDoesNotExist);
+        }
+
+        // Kiểm tra người dùng đã là thành viên trong bảng từ trước hay chưa
+        const member = await BoardMember.findOne({
+            where: {
+                BoardId: boardId,
+                UserId: userId,
+            },
+        });
+
+        if (!member) {
+            throw new BadRequest(resources.userIsNotAMember);
+        }
+
+        if (member.role !== enums.role[role]) {
+            await member.update({
+                role: enums.role[role],
+            });
+        }
+
+        res.status(200).json({
+            message: resources.updateMemmberRoleSuccessfully,
         });
     } catch (error) {
         next(error);
@@ -283,5 +327,6 @@ module.exports = {
     updateBoard,
     closeBoard,
     addMemmberToBoard,
+    changeMemberRole,
     removeMemberFromBoard,
 };
