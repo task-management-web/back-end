@@ -20,10 +20,13 @@ const createNewList = async (req, res, next) => {
 const deleteList = async (req, res, next) => {
     try {
         const listId = req.params.id;
+        
         const listToDelete = await List.findByPk(listId);
+
         if (!listToDelete) {
             return res.status(404).json({ error: "List not found" });
         }
+
         await listToDelete.destroy();
 
         res.status(200).json({ message: "List deleted successfully" });

@@ -1,4 +1,5 @@
 const Checklist = require("../models/checklist");
+const ChecklistItem = require("../models/checklistItem");
 
 // Tạo checklist mới
 const createChecklist = async (req, res, next) => {
@@ -42,18 +43,22 @@ const updateChecklist = async (req, res, next) => {
     }
 };
 
-
 // Xóa checklist
 const deleteChecklist = async (req, res, next) => {
-    const { checklistId } = req.body;
-    try {
-        const { checklistId } = req.body;
+    const checklistId = req.params.id;
 
+    try {
         const checklistToDelete = await Checklist.findByPk(checklistId);
 
         if (!checklistToDelete) {
             return res.status(404).json({ error: 'Checklist not found' });
         }
+
+        await ChecklistItem.destroy({
+            where: {
+                ChecklistId: checklistId,
+            },
+        });
 
         await checklistToDelete.destroy();
         
