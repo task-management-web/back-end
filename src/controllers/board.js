@@ -53,7 +53,6 @@ async function getBoardById(req, res, next) {
                 {
                     model: User,
                     as: "users",
-                    attributes: [],
                     where: {
                         id: req.user.id,
                     },
@@ -206,7 +205,17 @@ async function addMemmberToBoard(req, res, next) {
         });
 
         if (member) {
-            throw new BadRequest(resources.userAlreadyMemberOfBoard);
+            if (member.role !== enums.role[role]) {
+                await member.update({
+                    role: enums.role[role],
+                });
+
+                res.status(200).json({
+                    message: resources.updateMemmberRoleSuccessfully,
+                });
+            } else {
+                throw new BadRequest(resources.userAlreadyMemberOfBoard);
+            }
         }
 
         // Thêm bản ghi có boardId và userId tương ứng vào BoardMember

@@ -27,6 +27,7 @@ module.exports = {
     removeMemberFromBoardSuccessfully: "Xoá thành viên khỏi bảng thành công.",
     signUpSuccess: "Đăng ký thành công.",
     unauthorized: "Xác thực không thành công.",
+    updateMemmberRoleSuccessfully: "Cập nhật vai trò người dùng thành công.",
     updateSuccessfully: "Cập nhật thành công.",
     userAlreadyMemberOfBoard: "Người dùng vốn đã được thêm vào bảng.",
     userDeleted: "Đã xoá người dùng.",
