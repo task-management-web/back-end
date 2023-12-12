@@ -10,6 +10,7 @@ const CardLabel = require("../models/cardLabel");
 const { Op } = require("sequelize");
 const resources = require("../helpers/resources");
 const BadRequest = require("../errors/BadRequest");
+const List = require("../models/list");
 
 // Tạo thẻ mới
 const createNewCard = async (req, res) => {
@@ -58,12 +59,26 @@ const moveCardToNewList = async (req, res) => {
     try {
         const id = req.params.cardId;
         const newListId = req.body.listId;
+
         const cardToMove = await Card.findByPk(id);
+
         if (!cardToMove) {
             return res.status(404).json({ error: "Card not found" });
         }
-        cardToMove.listId = newListId;
-        await cardToMove.save();
+
+        const list = await List.findOne({
+            where: {
+                id: newListId,
+            },
+        });
+
+        if (!list) {
+            return res.status(404).json({ error: "List not found" });
+        }
+
+        await cardToMove.update({
+            ListId: newListId,
+        });
 
         res.json({ message: "Card moved successfully", card: cardToMove });
     } catch (error) {
