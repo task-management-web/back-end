@@ -20,7 +20,7 @@ const createNewList = async (req, res, next) => {
 const deleteList = async (req, res, next) => {
     try {
         const listId = req.params.id;
-        
+
         const listToDelete = await List.findByPk(listId);
 
         if (!listToDelete) {
@@ -39,12 +39,15 @@ const deleteList = async (req, res, next) => {
 const updateList = async (req, res, next) => {
     try {
         const listId = req.params.id;
+
         const listToUpdate = await List.findByPk(listId);
+
         if (!listToUpdate) {
             return res.status(404).json({ error: "List not found" });
         }
 
         listToUpdate.title = req.body.title || listToUpdate.title;
+
         listToUpdate.position = req.body.position || listToUpdate.position;
 
         await listToUpdate.save();
